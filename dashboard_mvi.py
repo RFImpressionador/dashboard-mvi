@@ -41,7 +41,9 @@ cvli_pivot = cvli_por_ano.pivot(index="Cidade", columns="Ano", values="Total").f
 anos_disp = sorted(cvli_pivot.columns.tolist())
 for i in range(1, len(anos_disp)):
     ant, atual = anos_disp[i-1], anos_disp[i]
-    cvli_pivot[f"% Variação {ant}-{atual}"] = ((cvli_pivot[atual] - cvli_pivot[ant]) / cvli_pivot[ant].replace(0, 1)) * 100
+    cvli_pivot[f"% Variação {ant}-{atual}"] = (
+    ((cvli_pivot[atual] - cvli_pivot[ant]) / cvli_pivot[ant].replace(0, 1)) * 100
+).round(2)
 cvli_pivot = cvli_pivot.reset_index()
 
 # Tabela 3: Dias sem mortes
