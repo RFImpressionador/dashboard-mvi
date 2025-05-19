@@ -15,11 +15,12 @@ def autenticar():
         if senha == "pmal2025":
             st.session_state.autenticado = True
             st.success("✅ Acesso liberado!")
-            st.experimental_rerun()
+            st.rerun()  # ✅ versão correta
         elif senha:
             st.error("❌ Senha incorreta.")
         return False
     return True
+
 
 # Bloqueia o acesso se não estiver autenticado
 if not autenticar():
