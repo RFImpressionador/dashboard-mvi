@@ -127,6 +127,7 @@ st.markdown(
         .hide(axis='index')
         .to_html(), 
     unsafe_allow_html=True
+)
 
 st.markdown("### ⏳ Dias sem Mortes por Cidade")
 st.markdown(
