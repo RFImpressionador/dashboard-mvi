@@ -32,6 +32,7 @@ st.markdown("## 📊 Análise MVI 10º BPM")
 st.markdown("Visualização interativa de Mortes Violentas Intencionais (CVLI) e outras categorias, com filtros e gráficos atualizados.")
 
 @st.cache_data
+#Carrega os dados e Elimina Duplicidade da Tabela
 def carregar_dados():
     df = pd.read_excel("Tabela_de_MVI_2023_2025.xlsx")
     df.columns = [
@@ -42,6 +43,10 @@ def carregar_dados():
     df["Ano"] = df["Data_Fato"].dt.year
     df["Mes"] = df["Data_Fato"].dt.month
     df["Mes_Nome"] = df["Data_Fato"].dt.strftime('%B')
+    
+    # 🔁 Remover linhas duplicadas com base em colunas principais
+    df = df.drop_duplicates(subset=["Data_Fato", "Nome_Vitima", "Cidade", "Categoria"])
+    
     return df
 
 df = carregar_dados()
