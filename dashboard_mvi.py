@@ -126,9 +126,10 @@ st.markdown(
         .format({col: "{:.2f}" for col in cvli_pivot.columns if "Variação" in col})
         .set_properties(**{'text-align': 'center'})
         .hide(axis='index')
-        .to_html(), 
+        .to_html(),
     unsafe_allow_html=True
 )
+
 
 st.markdown("### ⏳ Dias sem Mortes por Cidade")
 st.markdown(
