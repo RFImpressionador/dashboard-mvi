@@ -48,15 +48,44 @@ def carregar_dados():
     df = df.drop_duplicates(subset=["Data_Fato", "Nome_Vitima", "Cidade", "Categoria"])
     
     return df
-
+#ATUALIZADO PARA FILAR PELO 10BPM E OUTRAS CIDADES
 df = carregar_dados()
 
-# Filtros
-cidades = st.multiselect("Selecionar Cidades", sorted(df["Cidade"].unique()), default=sorted(df["Cidade"].unique()))
-anos = st.multiselect("Selecionar Anos", sorted(df["Ano"].dropna().unique()), default=sorted(df["Ano"].dropna().unique()))
-categorias = st.multiselect("Selecionar Categorias", sorted(df["Categoria"].unique()), default=sorted(df["Categoria"].unique()))
+# 🔍 Lista fixa das cidades do 10º BPM
+cidades_10bpm = [
+    "Palmeira dos Índios", "Igaci", "Estrela de Alagoas", "Minador do Negrão",
+    "Cacimbinhas", "Quebrangulo", "Paulo Jacinto", "Mar Vermelho",
+    "Belém", "Tanque D'Arca", "Maribondo"
+]
 
-df_filtrado = df[df["Cidade"].isin(cidades) & df["Ano"].isin(anos) & df["Categoria"].isin(categorias)]
+# ✅ Filtro de cidades com todas disponíveis, mas 10º BPM pré-selecionado
+cidades = st.multiselect(
+    "Selecionar Cidades",
+    sorted(df["Cidade"].unique()),
+    default=[c for c in cidades_10bpm if c in df["Cidade"].unique()]
+)
+
+# ✅ Filtro de anos com todos disponíveis
+anos = st.multiselect(
+    "Selecionar Anos",
+    sorted(df["Ano"].dropna().unique()),
+    default=sorted(df["Ano"].dropna().unique())
+)
+
+# ✅ Filtro de categorias com todos disponíveis
+categorias = st.multiselect(
+    "Selecionar Categorias",
+    sorted(df["Categoria"].unique()),
+    default=sorted(df["Categoria"].unique())
+)
+
+# 🔎 Aplicando filtros
+df_filtrado = df[
+    df["Cidade"].isin(cidades) &
+    df["Ano"].isin(anos) &
+    df["Categoria"].isin(categorias)
+]
+
 
 # Tabela 1: Total por cidade e categoria
 tabela_total = df_filtrado.groupby(["Cidade", "Categoria"]).size().reset_index(name="Total")
