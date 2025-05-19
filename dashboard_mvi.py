@@ -123,7 +123,7 @@ st.markdown(
 st.markdown("### 📈 Comparativo CVLI Ano a Ano")
 st.markdown(
     cvli_pivot.style
-        .format("{:.2f}", subset=[col for col in cvli_pivot.columns if "Variação" in col])
+        .format({col: "{:.2f}" for col in cvli_pivot.columns if "Variação" in col})
         .set_properties(**{'text-align': 'center'})
         .hide(axis='index')
         .to_html(), 
