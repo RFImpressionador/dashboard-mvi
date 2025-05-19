@@ -4,6 +4,28 @@ import pandas as pd
 from datetime import datetime
 from io import BytesIO
 
+# 🔐 Tela de login com sessão persistente
+def autenticar():
+    if "autenticado" not in st.session_state:
+        st.session_state.autenticado = False
+
+    if not st.session_state.autenticado:
+        st.title("🔐 Painel Protegido")
+        senha = st.text_input("Digite a senha de acesso:", type="password")
+        if senha == "pmal2025":
+            st.session_state.autenticado = True
+            st.success("✅ Acesso liberado!")
+            st.experimental_rerun()
+        elif senha:
+            st.error("❌ Senha incorreta.")
+        return False
+    return True
+
+# Bloqueia o acesso se não estiver autenticado
+if not autenticar():
+    st.stop()
+    
+#Conterudo após o login 
 st.set_page_config(page_title="Análise MVI 10º BPM", layout="wide")
 
 st.markdown("## 📊 Análise MVI 10º BPM")
@@ -53,15 +75,34 @@ ultimas_mortes["Dias_Sem_Mortes"] = (hoje - ultimas_mortes["Data_Fato"]).dt.days
 quantitativo = df.groupby("Cidade").size().reset_index(name="Total_Ocorrencias")
 dias_sem_morte = pd.merge(quantitativo, ultimas_mortes, on="Cidade").rename(columns={"Data_Fato": "Ultima_Morte"})
 
-# Exibição
+# Exibição alterada para centralizar 
 st.markdown("### 🔢 Total por Cidade e Categoria")
-st.dataframe(tabela_total)
+st.markdown(
+    tabela_total.style
+        .set_properties(**{'text-align': 'center'})
+        .hide(axis='index')
+        .to_html(),
+    unsafe_allow_html=True
+)
 
 st.markdown("### 📈 Comparativo CVLI Ano a Ano")
-st.dataframe(cvli_pivot)
+st.markdown(
+    cvli_pivot.style
+        .format("{:.2f}", subset=[col for col in cvli_pivot.columns if "Variação" in col])
+        .set_properties(**{'text-align': 'center'})
+        .hide(axis='index')
+        .to_html(), 
+    unsafe_allow_html=True
 
 st.markdown("### ⏳ Dias sem Mortes por Cidade")
-st.dataframe(dias_sem_morte)
+st.markdown(
+    dias_sem_morte.style
+        .format({"Dias_Sem_Mortes": "{:.0f}"})
+        .set_properties(**{'text-align': 'center'})
+        .hide(axis='index')
+        .to_html(),
+    unsafe_allow_html=True
+)
 
 # Botão para exportar todas as tabelas
 def to_excel(dfs: dict):
