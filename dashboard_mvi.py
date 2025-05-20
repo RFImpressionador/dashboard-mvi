@@ -148,17 +148,35 @@ tabela_total = df_filtrado.groupby(["CIDADE FATO", "CATEGORIA"]).size().reset_in
 st.markdown("### 🔢 Total por Cidade e Categoria")
 st.markdown(tabela_total.style.set_properties(**{'text-align': 'center'}).hide(axis='index').to_html(), unsafe_allow_html=True)
 
-# 📆 Dias sem Mortes
+# 📆 Dias sem Mortes — filtrando apenas CVLI e as cidades selecionadas
 hoje = pd.to_datetime(datetime.now().date())
-ultimas_mortes = df_filtrado.groupby("CIDADE FATO")["DATA FATO"].max().reset_index()
+
+# 🔎 Filtra somente os dados da categoria CVLI
+df_cvli_geral = df[(df["CATEGORIA"] == "CVLI") & (df["CIDADE FATO"].isin(cidades))]
+
+# 🕒 Calcula última morte por cidade e dias sem morte
+ultimas_mortes = df_cvli_geral.groupby("CIDADE FATO")["DATA FATO"].max().reset_index()
 ultimas_mortes["Dias_Sem_Mortes"] = (hoje - ultimas_mortes["DATA FATO"]).dt.days
-quantitativo = df_filtrado.groupby("CIDADE FATO").size().reset_index(name="Total_Ocorrencias")
+
+# 📊 Conta total de ocorrências CVLI por cidade
+quantitativo = df_cvli_geral.groupby("CIDADE FATO").size().reset_index(name="Total_Ocorrencias")
+
+# 🔗 Junta tudo em uma tabela só
 dias_sem_morte = pd.merge(quantitativo, ultimas_mortes, on="CIDADE FATO").rename(columns={"DATA FATO": "Ultima_Morte"})
-# 🔁 Aplica formatação de data brasileira
+
+# 🔁 Aplica formatação para data brasileira
 dias_sem_morte["Ultima_Morte"] = dias_sem_morte["Ultima_Morte"].dt.strftime("%d/%m/%Y %H:%M")
 
+# 🖼️ Exibe a tabela formatada
 st.markdown("### ⏳ Dias sem Mortes por Cidade")
-st.markdown(dias_sem_morte.style.format({"Dias_Sem_Mortes": "{:.0f}"}).set_properties(**{'text-align': 'center'}).hide(axis='index').to_html(), unsafe_allow_html=True)
+st.markdown(
+    dias_sem_morte
+    .style.format({"Dias_Sem_Mortes": "{:.0f}"})
+    .set_properties(**{'text-align': 'center'})
+    .hide(axis='index')
+    .to_html(),
+    unsafe_allow_html=True
+)
 
 # Tabela 3: Comparativo CVLI Ano a Ano
 df_cvli = df_filtrado[df_filtrado["CATEGORIA"] == "CVLI"]
