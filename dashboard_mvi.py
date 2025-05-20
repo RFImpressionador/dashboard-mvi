@@ -106,7 +106,12 @@ cidades = st.multiselect("Selecionar Cidades", sorted(df["Cidade"].unique()), de
 anos = st.multiselect("Selecionar Anos", sorted(df["Ano"].dropna().unique()), default=sorted(df["Ano"].dropna().unique()))
 categorias = st.multiselect("Selecionar Categorias", sorted(df["Categoria"].unique()), default=sorted(df["Categoria"].unique()))
 
-df_filtrado = df[df["Cidade"].isin(cidades) & df["Ano"].isin(anos) & df["Categoria"].isin(categorias)]
+df_filtrado = df[
+    df["Cidade"].isin(cidades) &
+    df["Ano"].isin(anos) &
+    df["Categoria"].isin(categorias) &
+    df["Mes"].isin(meses)
+]
 
 # Tabela 1
 tabela_total = df_filtrado.groupby(["Cidade", "Categoria"]).size().reset_index(name="Total")
