@@ -101,8 +101,11 @@ def carregar_dados():
     
     return df
 
+# 👇 Botão para limpar cache e recarregar
+if st.button("🔄 Atualizar dados da planilha"):
+    st.cache_data.clear()  # Limpa cache manualmente
 
-df = carregar_dados()
+df = carregar_dados_google()
 
 # 🎯 Filtros
 cidades_10bpm = [
