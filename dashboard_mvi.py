@@ -82,6 +82,7 @@ def carregar_dados():
         "Bairro", "Categoria", "Subcategoria", "BO_PC", "BO_SISGOU", "CAD"
     ]
     df["Data_Fato"] = pd.to_datetime(df["Data_Fato"], errors='coerce')
+    df = df[df["Data_Fato"].notna()] # Remove linhas com Data_Fato inválida
     df["Ano"] = df["Data_Fato"].dt.year.astype(int)  # Garante apenas anos reais e inteiros
     df["Mes"] = df["Data_Fato"].dt.month
     df["Mes_Nome"] = df["Data_Fato"].dt.strftime('%B')
