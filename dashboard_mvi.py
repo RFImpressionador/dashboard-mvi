@@ -106,38 +106,31 @@ cidades_10bpm = [
 ]
 # ✅ Filtro de cidades com todas disponíveis, mas 10º BPM pré-selecionado
 cidades = st.multiselect("Selecionar Cidades", sorted(df["Cidade"].unique()), default=[c for c in cidades_10bpm if c in df["Cidade"].unique()])
-# ✅ Filtro de anos com todos disponíveis
-anos_disponiveis = sorted(df["Ano"].dropna().unique().tolist())
-
-anos = st.multiselect(
-    "Selecionar Anos",
-    options=anos_disponiveis,
-    default=anos_disponiveis  # pré-seleciona todos os anos realmente presentes
-)
-
 # ✅ Filtro de categorias com todos disponíveis
 categorias = st.multiselect("Selecionar Categorias", sorted(df["Categoria"].unique()), default=sorted(df["Categoria"].unique()))
+# ✅ Filtro de anos com todos disponíveis
+anos = st.multiselect(
+    "Selecionar Anos",
+    options=sorted(df["Ano"].dropna().unique().tolist()),
+    default=sorted(df["Ano"].dropna().unique().tolist())
+)
 # ✅ Filtro de meses (exibe nomes, usa números internamente)
-meses_disponiveis = sorted(df["Mes"].dropna().unique().tolist())
-
 meses = st.multiselect(
     "Selecionar Mês (opcional)",
-    options=meses_disponiveis,
-    format_func=lambda x: datetime(2023, x, 1).strftime('%B'),
+    options=sorted(df["Mes"].dropna().unique().tolist()),
+    format_func=lambda x: datetime(2023, x, 1).strftime('%B'),  # Exibe nomes dos meses
     default=[]
 )
 
 
-filtros = (
-    df["Cidade"].isin(cidades) &
+df_filtrado = df[
+    df["CIDADE FATO"].isin(cidades) &
     df["Ano"].isin(anos) &
-    df["Categoria"].isin(categorias)
-)
+    df["SUBJETIVIDADE"].isin(categorias)
+]
 
-if meses:  # Só filtra por mês se meses tiver algo
-    filtros = filtros & df["Mes"].isin(meses)
-
-df_filtrado = df[filtros]
+if meses:
+    df_filtrado = df_filtrado[df_filtrado["Mes"].isin(meses)]
 
 # Tabela 1
 tabela_total = df_filtrado.groupby(["Cidade", "Categoria"]).size().reset_index(name="Total")
