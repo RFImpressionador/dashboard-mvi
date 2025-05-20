@@ -4,12 +4,12 @@ import pandas as pd
 from datetime import datetime
 from io import BytesIO
 from pathlib import Path
-import requests  # ✅ Corrige o erro "requests is not defined"
+import requests
 
-# ⚠️ DEVE vir antes de qualquer outro comando do Streamlit
+# ⚠️ Configuração da página
 st.set_page_config(page_title="Análise MVI 10º BPM", layout="wide")
 
-# ✅ Carrega e aplica o CSS customizado
+# ✅ CSS customizado
 def aplicar_css_personalizado():
     caminho_css = "style.css"
     if Path(caminho_css).exists():
@@ -18,7 +18,7 @@ def aplicar_css_personalizado():
 
 aplicar_css_personalizado()
 
-# 🏡 LOGIN
+# 🏡 Autenticação simples
 def autenticar():
     if "autenticado" not in st.session_state:
         st.session_state.autenticado = False
@@ -37,10 +37,10 @@ def autenticar():
 if not autenticar():
     st.stop()
 
-# 📅 Data fictícia da planilha online
+# 📅 Data fictícia
 data_modificacao = "Atualização automática via Google Sheets"
 
-# 🚨 Cabeçalho institucional (mantido igual)
+# 🚨 Cabeçalho institucional
 st.markdown(f"""
 <div style="text-align: center; color: red; font-weight: bold; border: 2px solid red; padding: 5px;">
 CONHECIMENTO PARA ASSESSORAMENTO DO PROCESSO DECISÓRIO, NÃO TENDO FINALIDADE PROBATÓRIA...
@@ -70,55 +70,37 @@ ACESSO RESTRITO
 </div>
 """, unsafe_allow_html=True)
 
-# 📊 Carregamento e preparo dos dados
+# 📊 Carregamento de dados
+@st.cache_data
 def carregar_dados():
     try:
         file_id = "1MNuLlWj6XFHsVgtrp4aUyitApFnFpP5s"
         url = f"https://drive.google.com/uc?export=download&id={file_id}"
-
         resposta = requests.get(url)
         resposta.raise_for_status()
         arquivo = BytesIO(resposta.content)
-
         df = pd.read_excel(arquivo, engine="openpyxl")
         df.columns = [col.strip() for col in df.columns]
-
-        # 🛡️ Verifica colunas essenciais
-        colunas_necessarias = ["DATA FATO", "CIDADE FATO", "CATEGORIA", "NOME VITIMA"]
-        for col in colunas_necessarias:
-            if col not in df.columns:
-                st.warning(f"⚠️ Coluna ausente: {col}")
-                return pd.DataFrame()
-
         df["DATA FATO"] = pd.to_datetime(df["DATA FATO"], dayfirst=True, errors="coerce")
         df["Ano"] = df["DATA FATO"].dt.year
         df["Mes"] = df["DATA FATO"].dt.month
         df["Mes_Nome"] = df["DATA FATO"].dt.strftime('%B')
         df = df.drop_duplicates(subset=["DATA FATO", "NOME VITIMA", "CIDADE FATO", "CATEGORIA"])
-
         return df
     except Exception as e:
-        st.error(f"❌ Erro ao carregar planilha Excel: {e}")
+        st.error(f"Erro ao carregar dados: {e}")
         return pd.DataFrame()
 
-# ✅ Botão para limpar o cache ANTES de carregar os dados
 if st.button("🔄 Atualizar dados da planilha"):
     st.cache_data.clear()
 
-@st.cache_data
-def dados_cache():
-    return carregar_dados()
-
-df = dados_cache()
-
-
-
-# 🧪 Debug opcional para listar colunas disponíveis
-# st.write("Colunas encontradas:", df.columns.tolist())
-
-# 🎯 Filtros
+df = carregar_dados()
 if df.empty:
     st.stop()
+
+# Aqui entram os filtros e as três tabelas com merge reindexando as cidades selecionadas,
+# como explicado na resposta anterior.
+
 
 cidades_10bpm = [
     "Palmeira dos Índios", "Igaci", "Estrela de Alagoas", "Minador do Negrão",
