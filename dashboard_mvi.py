@@ -56,7 +56,7 @@ df = carregar_dados()
 cidades_10bpm = [
     "Palmeira dos Índios", "Igaci", "Estrela de Alagoas", "Minador do Negrão",
     "Cacimbinhas", "Quebrangulo", "Paulo Jacinto", "Mar Vermelho",
-    "Belém", "Tanque D'Arca", "Maribondo"
+    "Belém", "Tanque d Arca", "Maribondo"
 ]
 
 # ✅ Filtro de cidades com todas disponíveis, mas 10º BPM pré-selecionado
@@ -106,9 +106,9 @@ cvli_pivot = cvli_pivot.reset_index()
 
 # Tabela 3: Dias sem mortes
 hoje = pd.to_datetime(datetime.now().date())
-ultimas_mortes = df.groupby("Cidade")["Data_Fato"].max().reset_index()
+ultimas_mortes = df_filtrado.groupby("Cidade")["Data_Fato"].max().reset_index()
 ultimas_mortes["Dias_Sem_Mortes"] = (hoje - ultimas_mortes["Data_Fato"]).dt.days
-quantitativo = df.groupby("Cidade").size().reset_index(name="Total_Ocorrencias")
+quantitativo = df_filtrado.groupby("Cidade").size().reset_index(name="Total_Ocorrencias")
 dias_sem_morte = pd.merge(quantitativo, ultimas_mortes, on="Cidade").rename(columns={"Data_Fato": "Ultima_Morte"})
 
 # Exibição alterada para centralizar 
