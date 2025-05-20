@@ -74,15 +74,20 @@ ACESSO RESTRITO
 
 # ================= DADOS E DASHBOARD =================
 
-@st.cache_data
+@st.cache_data #✅ Isso faz o Streamlit não recarregar os dados toda hora
 def carregar_dados():
+    # 📄 Carrega a planilha
     df = pd.read_excel("Tabela_de_MVI_2024_2025.xlsx")
+    # 🧾 Renomeia as colunas para nomes padronizados
     df.columns = [
         "Index", "ID", "Data_Fato", "Nome_Vitima", "Sexo", "Mae_Vitima", "Cidade", 
         "Bairro", "Categoria", "Subcategoria", "BO_PC", "BO_SISGOU", "CAD"
     ]
+     # 📆 Converte a coluna "Data_Fato" em data real
     df["Data_Fato"] = pd.to_datetime(df["Data_Fato"], errors='coerce')
+    
     df = df[df["Data_Fato"].notna()] # Remove linhas com Data_Fato inválida
+ # 📊 Cria colunas derivadas de data
     df["Ano"] = df["Data_Fato"].dt.year.astype(int)  # Garante apenas anos reais e inteiros
     df["Mes"] = df["Data_Fato"].dt.month
     df["Mes_Nome"] = df["Data_Fato"].dt.strftime('%B')
