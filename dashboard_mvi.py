@@ -74,37 +74,50 @@ ACESSO RESTRITO
 
 # ================= DADOS E DASHBOARD =================
 
-@st.cache_data #✅ Isso faz o Streamlit não recarregar os dados toda hora
+# Carrega os dados e prepara colunas de datas
+@st.cache_data
 def carregar_dados():
-    # 📄 Carrega a planilha
     df = pd.read_excel("Tabela_de_MVI_2024_2025.xlsx")
-    # 🧾 Renomeia as colunas para nomes padronizados
     df.columns = [
         "Index", "ID", "Data_Fato", "Nome_Vitima", "Sexo", "Mae_Vitima", "Cidade", 
         "Bairro", "Categoria", "Subcategoria", "BO_PC", "BO_SISGOU", "CAD"
     ]
-     # 📆 Converte a coluna "Data_Fato" em data real
-    df["Data_Fato"] = pd.to_datetime(df["Data_Fato"], errors='coerce')
-    
-    df = df[df["Data_Fato"].notna()] # Remove linhas com Data_Fato inválida
- # 📊 Cria colunas derivadas de data
-    df["Ano"] = df["Data_Fato"].dt.year.astype(int)  # Garante apenas anos reais e inteiros
+
+    # ✅ Converte "Data_Fato" para datetime completo (corrige dia/mês/ano e hora)
+    df["Data_Fato"] = pd.to_datetime(df["Data_Fato"], dayfirst=True, errors="coerce")
+
+    # ✅ Extrai informações de tempo
+    df["Ano"] = df["Data_Fato"].dt.year
     df["Mes"] = df["Data_Fato"].dt.month
-    df["Mes_Nome"] = df["Data_Fato"].dt.strftime('%B')
+    df["Mes_Nome"] = df["Data_Fato"].dt.strftime('%B')  # Nome do mês por extenso
+
+    # ✅ Remove duplicatas baseando-se em múltiplas colunas
     df = df.drop_duplicates(subset=["Data_Fato", "Nome_Vitima", "Cidade", "Categoria"])
+
     return df
 
-df = carregar_dados()
 
+df = carregar_dados()
+# ✅ Filtro de cidades com todas disponíveis, mas 10º BPM pré-selecionado
 cidades_10bpm = [
     "Palmeira dos Índios", "Igaci", "Estrela de Alagoas", "Minador do Negrão",
     "Cacimbinhas", "Quebrangulo", "Paulo Jacinto", "Mar Vermelho",
     "Belém", "Tanque d Arca", "Maribondo"
 ]
-
+# ✅ Filtro de cidades com todas disponíveis, mas 10º BPM pré-selecionado
 cidades = st.multiselect("Selecionar Cidades", sorted(df["Cidade"].unique()), default=[c for c in cidades_10bpm if c in df["Cidade"].unique()])
+# ✅ Filtro de anos com todos disponíveis
 anos = st.multiselect("Selecionar Anos", sorted(df["Ano"].dropna().unique()), default=sorted(df["Ano"].dropna().unique()))
+# ✅ Filtro de categorias com todos disponíveis
 categorias = st.multiselect("Selecionar Categorias", sorted(df["Categoria"].unique()), default=sorted(df["Categoria"].unique()))
+# ✅ Filtro de meses (exibe nomes, usa números internamente)
+meses = st.multiselect(
+    "Selecionar Meses (opcional)",
+    options=sorted(df["Mes"].dropna().unique()),
+    format_func=lambda x: datetime(2023, x, 1).strftime('%B'),
+    default=[]
+)
+
 
 df_filtrado = df[
     df["Cidade"].isin(cidades) &
