@@ -35,7 +35,7 @@ st.markdown("Visualização interativa de Mortes Violentas Intencionais (CVLI) e
 @st.cache_data
 #Carrega os dados e Elimina Duplicidade da Tabela
 def carregar_dados():
-    df = pd.read_excel("Tabela_de_MVI_2023_2025.xlsx")
+    df = pd.read_excel("Tabela_de_MVI_2024_2025.xlsx")
     df.columns = [
         "Index", "ID", "Data_Fato", "Nome_Vitima", "Sexo", "Mae_Vitima", "Cidade", 
         "Bairro", "Categoria", "Subcategoria", "BO_PC", "BO_SISGOU", "CAD"
