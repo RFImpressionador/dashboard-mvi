@@ -34,8 +34,6 @@ if caminho_arquivo.exists():
 else:
     data_atualizacao = "Arquivo não encontrado"
 
-# 👁️ Adiciona imagem da logo P2 centralizada
-st.image("Logo4 P2 10BPM.png", width=200)  # você pode ajustar o valor de "width" se quiser maior ou menor
 
 st.markdown(f'''
 <div style="text-align: center; color: red; font-weight: bold; border: 2px solid red; padding: 5px;">
@@ -44,6 +42,10 @@ CONHECIMENTO PARA ASSESSORAMENTO DO PROCESSO DECISÓRIO, NÃO TENDO FINALIDADE P
 <div style="text-align: center; color: red; font-weight: bold; border: 2px solid red; padding: 5px; margin-top: 5px;">
 ACESSO RESTRITO
 </div>
+
+# 👁️ Adiciona imagem da logo P2 centralizada
+st.image("Logo4 P2 10BPM.png", width=100)  # você pode ajustar o valor de "width" se quiser maior ou menor
+
 <br>
 <div style="text-align: center; font-weight: bold;">
     ESTADO DE ALAGOAS<br>
