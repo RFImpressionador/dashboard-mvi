@@ -167,15 +167,19 @@ if len(anos) > 1:
     cvli_mes_pivot = cvli_mes.pivot_table(index=["CIDADE FATO", "Mes"], columns="Ano", values="Total", fill_value=0)
 
     st.markdown("### 📊 Comparativo CVLI Mês a Mês")
-    st.markdown(
+    # Extrai nomes das colunas que são anos (numéricos)
+colunas_numericas = [col for col in cvli_mes_pivot.columns if isinstance(col, int)]
+
+st.markdown(
     cvli_mes_pivot.reset_index()
     .style
-    .format("{:.2f}")
+    .format({col: "{:.2f}" for col in colunas_numericas})
     .set_properties(**{'text-align': 'center'})
     .hide(axis='index')
     .to_html(),
     unsafe_allow_html=True
 )
+
 
 
 # Exibição
