@@ -1,10 +1,21 @@
-
 # ✅ Importações
 import streamlit as st
 import pandas as pd
 from datetime import datetime
 from io import BytesIO
 from pathlib import Path
+
+# ⚠️ DEVE vir antes de qualquer outro comando do Streamlit
+st.set_page_config(page_title="Análise MVI 10º BPM", layout="wide")
+
+# ✅ Carrega e aplica o CSS customizado
+def aplicar_css_personalizado():
+    caminho_css = "style.css"
+    if Path(caminho_css).exists():
+        with open(caminho_css) as f:
+            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+aplicar_css_personalizado()
 
 # 🛡️ LOGIN
 def autenticar():
@@ -24,6 +35,7 @@ def autenticar():
 
 if not autenticar():
     st.stop()
+
     
 # ✅ Carrega e aplica o CSS customizado
 def aplicar_css_personalizado():
