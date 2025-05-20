@@ -119,12 +119,16 @@ meses = st.multiselect(
 )
 
 
-df_filtrado = df[
+filtros = (
     df["Cidade"].isin(cidades) &
     df["Ano"].isin(anos) &
-    df["Categoria"].isin(categorias) &
-    df["Mes"].isin(meses)
-]
+    df["Categoria"].isin(categorias)
+)
+
+if meses:  # Só filtra por mês se meses tiver algo
+    filtros = filtros & df["Mes"].isin(meses)
+
+df_filtrado = df[filtros]
 
 # Tabela 1
 tabela_total = df_filtrado.groupby(["Cidade", "Categoria"]).size().reset_index(name="Total")
