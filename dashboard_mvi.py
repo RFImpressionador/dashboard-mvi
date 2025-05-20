@@ -93,7 +93,7 @@ df_filtrado = df[df["CIDADE FATO"].isin(cidades) & df["Ano"].isin(anos) & df["CA
 if meses:
     df_filtrado = df_filtrado[df_filtrado["Mes"].isin(meses)]
 
-# 📌 Tabela Total
+# 📌 Tabela 2:Tabela Total
 tabela_total = df_filtrado.groupby(["CIDADE FATO", "CATEGORIA"]).size().reset_index(name="Total")
 st.markdown("### 🔢 Total por Cidade e Categoria")
 st.markdown(tabela_total.style.set_properties(**{'text-align': 'center'}).hide(axis='index').to_html(), unsafe_allow_html=True)
@@ -107,31 +107,60 @@ dias_sem_morte = pd.merge(quantitativo, ultimas_mortes, on="CIDADE FATO").rename
 st.markdown("### ⏳ Dias sem Mortes por Cidade")
 st.markdown(dias_sem_morte.style.format({"Dias_Sem_Mortes": "{:.0f}"}).set_properties(**{'text-align': 'center'}).hide(axis='index').to_html(), unsafe_allow_html=True)
 
-# 📈 Comparativo CVLI Ano a Ano
+# Tabela 3: Comparativo CVLI Ano a Ano
 df_cvli = df_filtrado[df_filtrado["CATEGORIA"] == "CVLI"]
 cvli_por_ano = df_cvli.groupby(["CIDADE FATO", "Ano"]).size().reset_index(name="Total")
 cvli_pivot = cvli_por_ano.pivot(index="CIDADE FATO", columns="Ano", values="Total").fillna(0).astype(int)
 
 anos_disp = sorted(cvli_pivot.columns.tolist())
 for i in range(1, len(anos_disp)):
-    ant, atual = anos_disp[i-1], anos_disp[i]
-    col_nome = f"% Variação {ant}-{atual}"
-    cvli_pivot[col_nome] = ((cvli_pivot[atual] - cvli_pivot[ant]) / cvli_pivot[ant].replace(0, 1)) * 100
+    ant, atual = anos_disp[i - 1], anos_disp[i]
+    col_var = f"% Variação {ant}-{atual}"
+    cvli_pivot[col_var] = ((cvli_pivot[atual] - cvli_pivot[ant]) / cvli_pivot[ant].replace(0, 1)) * 100
+    cvli_pivot[col_var] = cvli_pivot[col_var].round(0).astype(int)
 
-cvli_pivot = cvli_pivot.round(2).reset_index()
-col_variacoes = [col for col in cvli_pivot.columns if isinstance(col, str) and "Variação" in col]
-col_anos = [col for col in cvli_pivot.columns if isinstance(col, int)]
+cvli_pivot = cvli_pivot.reset_index()
 
 st.markdown("### 📈 Comparativo CVLI Ano a Ano")
-st.markdown(cvli_pivot.style.format({**{col: "{:.0f}" for col in col_anos}, **{col: "{:.2f}" for col in col_variacoes}}).set_properties(**{'text-align': 'center'}).hide(axis='index').to_html(), unsafe_allow_html=True)
+col_anos = [col for col in cvli_pivot.columns if isinstance(col, int)]
+col_var = [col for col in cvli_pivot.columns if isinstance(col, str) and "Variação" in col]
+
+st.markdown(
+    cvli_pivot.style
+    .format({**{col: "{:.0f}" for col in col_anos + col_var}})
+    .set_properties(**{'text-align': 'center'})
+    .hide(axis='index')
+    .to_html(),
+    unsafe_allow_html=True
+)
 
 # 📊 Comparativo CVLI Mês a Mês
+# Tabela 4: Comparativo CVLI Mês a Mês
 if len(anos) > 1:
     cvli_mes = df_cvli.groupby(["CIDADE FATO", "Ano", "Mes"]).size().reset_index(name="Total")
-    cvli_mes_pivot = cvli_mes.pivot_table(index=["CIDADE FATO", "Mes"], columns="Ano", values="Total", fill_value=0)
-    cvli_mes_pivot = cvli_mes_pivot.astype(int)
+    cvli_mes_pivot = cvli_mes.pivot(index=["CIDADE FATO", "Mes"], columns="Ano", values="Total").fillna(0).astype(int)
+
+    anos_mes = sorted([col for col in cvli_mes_pivot.columns if isinstance(col, int)])
+    for i in range(1, len(anos_mes)):
+        ant, atual = anos_mes[i - 1], anos_mes[i]
+        col_var = f"% Variação {ant}-{atual}"
+        cvli_mes_pivot[col_var] = ((cvli_mes_pivot[atual] - cvli_mes_pivot[ant]) / cvli_mes_pivot[ant].replace(0, 1)) * 100
+        cvli_mes_pivot[col_var] = cvli_mes_pivot[col_var].round(0).astype(int)
+
+    cvli_mes_pivot = cvli_mes_pivot.reset_index()
+
     st.markdown("### 📊 Comparativo CVLI Mês a Mês")
-    st.markdown(cvli_mes_pivot.reset_index().style.set_properties(**{'text-align': 'center'}).hide(axis='index').to_html(), unsafe_allow_html=True)
+    col_anos_mes = [col for col in cvli_mes_pivot.columns if isinstance(col, int)]
+    col_var_mes = [col for col in cvli_mes_pivot.columns if isinstance(col, str) and "Variação" in col]
+
+    st.markdown(
+        cvli_mes_pivot.style
+        .format({**{col: "{:.0f}" for col in col_anos_mes + col_var_mes}})
+        .set_properties(**{'text-align': 'center'})
+        .hide(axis='index')
+        .to_html(),
+        unsafe_allow_html=True
+    )
 
 # 📥 Exportação
 def to_excel(dfs: dict):
