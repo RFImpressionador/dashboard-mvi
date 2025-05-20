@@ -34,6 +34,9 @@ if caminho_arquivo.exists():
 else:
     data_atualizacao = "Arquivo não encontrado"
 
+# 👁️ Adiciona imagem da logo P2 centralizada
+st.image("Logo4 P2 10BPM.png", width=200)  # você pode ajustar o valor de "width" se quiser maior ou menor
+
 st.markdown(f'''
 <div style="text-align: center; color: red; font-weight: bold; border: 2px solid red; padding: 5px;">
 CONHECIMENTO PARA ASSESSORAMENTO DO PROCESSO DECISÓRIO, NÃO TENDO FINALIDADE PROBATÓRIA. CONFORME PREVISTO NA DNISP, ESTE DOCUMENTO E SEUS ANEXOS NÃO DEVEM SER INSERIDOS EM PROCEDIMENTOS E/OU PROCESSOS DE QUALQUER NATUREZA.
