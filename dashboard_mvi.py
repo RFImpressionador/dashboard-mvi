@@ -82,7 +82,7 @@ def carregar_dados():
         "Bairro", "Categoria", "Subcategoria", "BO_PC", "BO_SISGOU", "CAD"
     ]
     df["Data_Fato"] = pd.to_datetime(df["Data_Fato"], errors='coerce')
-    df["Ano"] = df["Data_Fato"].dt.year
+    df["Ano"] = df["Data_Fato"].dt.year.astype(int)  # Garante apenas anos reais e inteiros
     df["Mes"] = df["Data_Fato"].dt.month
     df["Mes_Nome"] = df["Data_Fato"].dt.strftime('%B')
     df = df.drop_duplicates(subset=["Data_Fato", "Nome_Vitima", "Cidade", "Categoria"])
