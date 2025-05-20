@@ -28,9 +28,10 @@ if not autenticar():
 # ⚠️ A linha abaixo deve ser a PRIMEIRA após autenticação (ANTES de qualquer markdown ou imagem):
 st.set_page_config(page_title="Análise MVI 10º BPM", layout="wide")
 
-# 🕒 Verifica a data da última atualização da planilha
+# 📅 Verifica a data da última atualização da planilha
+from pathlib import Path
 caminho_arquivo = Path("Tabela_de_MVI_2024_2025.xlsx")
-data_modificacao = datetime.fromtimestamp(caminho_arquivo.stat().st_mtime).strftime("%d/%m/%Y") if caminho_arquivo.exists() else "Arquivo não encontrado"
+data_modificacao = datetime.fromtimestamp(caminho_arquivo.stat().st_mtime).strftime("%d/%m/%Y")
 
 # 🚨 Cabeçalho institucional completo
 st.markdown("""
@@ -41,15 +42,15 @@ CONHECIMENTO PARA ASSESSORAMENTO DO PROCESSO DECISÓRIO, NÃO TENDO FINALIDADE P
 <div style="text-align: center; color: red; font-weight: bold; border: 2px solid red; padding: 5px; margin-top: 5px;">
 ACESSO RESTRITO
 </div>
-""", unsafe_allow_html=True)
 
-# 📷 Insere a imagem da logo centralizada
-st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
-st.image("logo_p2_10bpm.png", width=120)
-st.markdown("</div>", unsafe_allow_html=True)
+<br>
 
-# 🏛️ Texto institucional
-st.markdown(f"""
+<div style="text-align: center;">
+    <img src="https://raw.githubusercontent.com/RFImpressionador/dashboard-mvi/main/logo_p2_10bpm.png" width="120">
+</div>
+
+<br>
+
 <div style="text-align: center; font-weight: bold;">
     ESTADO DE ALAGOAS<br>
     SECRETARIA DE SEGURANÇA PÚBLICA<br>
@@ -66,9 +67,9 @@ st.markdown(f"""
 </div>
 
 <div style="text-align: center; font-size: 14px;">
-    Última atualização da planilha: <strong>{data_modificacao}</strong>
+    Última atualização da planilha: <strong>{}</strong>
 </div>
-""", unsafe_allow_html=True)
+""".format(data_modificacao), unsafe_allow_html=True)
 
 
 # ================= DADOS E DASHBOARD =================
