@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 from datetime import datetime
@@ -6,6 +5,7 @@ from io import BytesIO
 import os
 from pathlib import Path
 
+# ✅ ESTE COMANDO DEVE SER O PRIMEIRO DO STREAMLIT
 st.set_page_config(page_title="Análise MVI 10º BPM", layout="wide")
 
 # 🔐 Tela de login com sessão persistente
