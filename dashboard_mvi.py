@@ -101,8 +101,16 @@ def carregar_dados():
         st.error(f"❌ Erro ao carregar planilha Excel: {e}")
         return pd.DataFrame()
 
-# ✅ Carregar Dados 
-df = carregar_dados()
+# ✅ Botão para limpar o cache ANTES de carregar os dados
+if st.button("🔄 Atualizar dados da planilha"):
+    st.cache_data.clear()
+
+@st.cache_data
+def dados_cache():
+    return carregar_dados()
+
+df = dados_cache()
+
 
 
 # 🧪 Debug opcional para listar colunas disponíveis
