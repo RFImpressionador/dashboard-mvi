@@ -1,4 +1,3 @@
-
 # ✅ Importações
 import streamlit as st
 import pandas as pd
@@ -18,7 +17,7 @@ def aplicar_css_personalizado():
 
 aplicar_css_personalizado()
 
-# 🛡️ LOGIN
+# 🏡 LOGIN
 def autenticar():
     if "autenticado" not in st.session_state:
         st.session_state.autenticado = False
@@ -37,19 +36,7 @@ def autenticar():
 if not autenticar():
     st.stop()
 
-    
-# ✅ Carrega e aplica o CSS customizado
-def aplicar_css_personalizado():
-    caminho_css = "style.css"
-    if Path(caminho_css).exists():
-        with open(caminho_css) as f:
-            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-
-aplicar_css_personalizado()
-
-
-
-# 📅 Data da última modificação da planilha
+# 📅 Data fictícia da planilha online
 data_modificacao = "Atualização automática via Google Sheets"
 
 # 🚨 Cabeçalho institucional
@@ -83,29 +70,22 @@ ACESSO RESTRITO
 """, unsafe_allow_html=True)
 
 # 📊 Carregamento e preparo dos dados
-@st.cache_data
 def carregar_dados():
-    # 🔗 Link da sua planilha no Google Sheets (convertido em CSV)
     file_id = "1MNuLlWj6XFHsVgtrp4aUyitApFnFpP5s"
     url = f"https://docs.google.com/spreadsheets/d/{file_id}/export?format=csv"
-
     df = pd.read_csv(url)
-
-    # 🧹 Limpeza e formatação
     df.columns = [col.strip() for col in df.columns]
     df["DATA FATO"] = pd.to_datetime(df["DATA FATO"], dayfirst=True, errors="coerce")
     df["Ano"] = df["DATA FATO"].dt.year
     df["Mes"] = df["DATA FATO"].dt.month
     df["Mes_Nome"] = df["DATA FATO"].dt.strftime('%B')
     df = df.drop_duplicates(subset=["DATA FATO", "NOME VITIMA", "CIDADE FATO", "CATEGORIA"])
-    
     return df
 
-# 👇 Botão para limpar cache e recarregar
 if st.button("🔄 Atualizar dados da planilha"):
-    st.cache_data.clear()  # Limpa cache manualmente
+    st.cache_data.clear()
 
-df = carregar_dados_google()
+df = st.cache_data()(carregar_dados)()
 
 # 🎯 Filtros
 cidades_10bpm = [
