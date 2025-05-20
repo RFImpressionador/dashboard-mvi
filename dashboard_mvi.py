@@ -50,8 +50,7 @@ aplicar_css_personalizado()
 
 
 # 📅 Data da última modificação da planilha
-caminho_arquivo = Path("Tabela_de_MVI_2024_2025.xlsm")
-data_modificacao = datetime.fromtimestamp(caminho_arquivo.stat().st_mtime).strftime("%d/%m/%Y")
+data_modificacao = "Atualização automática via Google Sheets"
 
 # 🚨 Cabeçalho institucional
 st.markdown(f"""
