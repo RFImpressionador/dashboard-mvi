@@ -120,10 +120,13 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+# Formatar e centralizar a tabela CVLI com segurança
+colunas_variacao = [col for col in cvli_pivot.columns if isinstance(col, str) and "Variação" in col]
+
 st.markdown("### 📈 Comparativo CVLI Ano a Ano")
 st.markdown(
     cvli_pivot.style
-        .format({col: "{:.2f}" for col in cvli_pivot.columns if "Variação" in col})
+        .format({col: "{:.2f}" for col in colunas_variacao})
         .set_properties(**{'text-align': 'center'})
         .hide(axis='index')
         .to_html(),
