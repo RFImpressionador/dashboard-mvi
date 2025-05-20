@@ -35,18 +35,22 @@ else:
     data_atualizacao = "Arquivo não encontrado"
 
 
-st.markdown(f'''
+st.markdown(f"""
 <div style="text-align: center; color: red; font-weight: bold; border: 2px solid red; padding: 5px;">
 CONHECIMENTO PARA ASSESSORAMENTO DO PROCESSO DECISÓRIO, NÃO TENDO FINALIDADE PROBATÓRIA. CONFORME PREVISTO NA DNISP, ESTE DOCUMENTO E SEUS ANEXOS NÃO DEVEM SER INSERIDOS EM PROCEDIMENTOS E/OU PROCESSOS DE QUALQUER NATUREZA.
 </div>
+
 <div style="text-align: center; color: red; font-weight: bold; border: 2px solid red; padding: 5px; margin-top: 5px;">
 ACESSO RESTRITO
 </div>
 
-# 👁️ Adiciona imagem da logo P2 centralizada
-st.image("Logo4 P2 10BPM.png", width=100)  # você pode ajustar o valor de "width" se quiser maior ou menor
+<!-- 👁️ IMAGEM CENTRALIZADA -->
+<div style="text-align: center; margin-top: 10px; margin-bottom: -10px;">
+    <img src="Logo4 P2 10BPM.png" width="120">
+</div>
 
 <br>
+
 <div style="text-align: center; font-weight: bold;">
     ESTADO DE ALAGOAS<br>
     SECRETARIA DE SEGURANÇA PÚBLICA<br>
@@ -55,14 +59,18 @@ st.image("Logo4 P2 10BPM.png", width=100)  # você pode ajustar o valor de "widt
     CISP II – 10º BATALHÃO DE POLÍCIA MILITAR (10º BPM)<br>
     <a href="mailto:p2.10bpm@pm.al.gov.br">p2.10bpm@pm.al.gov.br</a>
 </div>
+
 <br>
+
 <div style="text-align: center; font-size: 20px; font-weight: bold;">
     RELATÓRIO DE INTELIGÊNCIA
 </div>
+
 <div style="text-align: center; font-size: 14px;">
     Última atualização da planilha: <strong>{data_atualizacao}</strong>
 </div>
-''', unsafe_allow_html=True)
+""", unsafe_allow_html=True)
+
 
 # ================= DADOS E DASHBOARD =================
 
