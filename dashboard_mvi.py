@@ -107,13 +107,22 @@ cidades_10bpm = [
 # ✅ Filtro de cidades com todas disponíveis, mas 10º BPM pré-selecionado
 cidades = st.multiselect("Selecionar Cidades", sorted(df["Cidade"].unique()), default=[c for c in cidades_10bpm if c in df["Cidade"].unique()])
 # ✅ Filtro de anos com todos disponíveis
-anos = st.multiselect("Selecionar Anos", sorted(df["Ano"].dropna().unique()), default=sorted(df["Ano"].dropna().unique()))
+anos_disponiveis = sorted(df["Ano"].dropna().unique().tolist())
+
+anos = st.multiselect(
+    "Selecionar Anos",
+    options=anos_disponiveis,
+    default=anos_disponiveis  # pré-seleciona todos os anos realmente presentes
+)
+
 # ✅ Filtro de categorias com todos disponíveis
 categorias = st.multiselect("Selecionar Categorias", sorted(df["Categoria"].unique()), default=sorted(df["Categoria"].unique()))
 # ✅ Filtro de meses (exibe nomes, usa números internamente)
+meses_disponiveis = sorted(df["Mes"].dropna().unique().tolist())
+
 meses = st.multiselect(
-    "Selecionar Meses (opcional)",
-    options=sorted(df["Mes"].dropna().unique()),
+    "Selecionar Mês (opcional)",
+    options=meses_disponiveis,
     format_func=lambda x: datetime(2023, x, 1).strftime('%B'),
     default=[]
 )
