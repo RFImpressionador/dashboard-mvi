@@ -86,14 +86,22 @@ ACESSO RESTRITO
 # 📊 Carregamento e preparo dos dados
 @st.cache_data
 def carregar_dados():
-    df = pd.read_excel("Tabela_de_MVI_2024_2025.xlsm")
+    # 🔗 Link da sua planilha no Google Sheets (convertido em CSV)
+    file_id = "1MNuLlWj6XFHsVgtrp4aUyitApFnFpP5s"
+    url = f"https://docs.google.com/spreadsheets/d/{file_id}/export?format=csv"
+
+    df = pd.read_csv(url)
+
+    # 🧹 Limpeza e formatação
     df.columns = [col.strip() for col in df.columns]
     df["DATA FATO"] = pd.to_datetime(df["DATA FATO"], dayfirst=True, errors="coerce")
     df["Ano"] = df["DATA FATO"].dt.year
     df["Mes"] = df["DATA FATO"].dt.month
     df["Mes_Nome"] = df["DATA FATO"].dt.strftime('%B')
     df = df.drop_duplicates(subset=["DATA FATO", "NOME VITIMA", "CIDADE FATO", "CATEGORIA"])
+    
     return df
+
 
 df = carregar_dados()
 
