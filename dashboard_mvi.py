@@ -1,4 +1,4 @@
-# Importações
+# I# Importações
 import streamlit as st
 import pandas as pd
 from datetime import datetime
@@ -162,6 +162,12 @@ for i in range(1, len(anos_disp)):
 cvli_pivot = cvli_pivot.round(2).reset_index()
 
 # Tabela 4: Comparativo CVLI Mês a Mês por Ano
+if len(anos) > 1:
+    cvli_mes = df_cvli.groupby(["CIDADE FATO", "Ano", "Mes"]).size().reset_index(name="Total")
+    cvli_mes_pivot = cvli_mes.pivot_table(index=["CIDADE FATO", "Mes"], columns="Ano", values="Total", fill_value=0)
+
+    st.markdown("### 📊 Comparativo CVLI Mês a Mês")
+    st.markdown(cvli_mes_pivot.reset_index().style.set_properties(**{'text-align': 'center'}).hide(axis='index').to_html(), unsafe_allow_html=True)
 
 # Exibição
 st.markdown("### 🔢 Total por Cidade e Categoria")
@@ -172,12 +178,6 @@ col_variacoes = [col for col in cvli_pivot.columns if isinstance(col, str) and "
 col_anos = [col for col in cvli_pivot.columns if isinstance(col, int)]
 st.markdown(cvli_pivot.style.format({col: "{:.0f}" for col in col_anos} | {col: "{:.2f}" for col in col_variacoes}).set_properties(**{'text-align': 'center'}).hide(axis='index').to_html(), unsafe_allow_html=True)
 
-if len(anos) > 1:
-    cvli_mes = df_cvli.groupby(["CIDADE FATO", "Ano", "Mes"]).size().reset_index(name="Total")
-    cvli_mes_pivot = cvli_mes.pivot_table(index=["CIDADE FATO", "Mes"], columns="Ano", values="Total", fill_value=0)
-
-    st.markdown("### 📊 Comparativo CVLI Mês a Mês")
-    st.markdown(cvli_mes_pivot.reset_index().style.set_properties(**{'text-align': 'center'}).hide(axis='index').to_html(), unsafe_allow_html=True)
 
 
 st.markdown("### ⏳ Dias sem Mortes por Cidade")
@@ -195,4 +195,4 @@ st.download_button("📥 Baixar Todas as Tabelas em Excel", data=to_excel({
     "Total_Cidade_Categoria": tabela_total,
     "Comparativo_CVLI": cvli_pivot,
     "Dias_Sem_Mortes": dias_sem_morte
-}), file_name="Dash_MVI_Tabelas.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")ument.spreadsheetml.sheet")
+}), file_name="Dash_MVI_Tabelas.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
