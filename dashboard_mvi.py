@@ -1,11 +1,12 @@
 
-
 import streamlit as st
 import pandas as pd
 from datetime import datetime
 from io import BytesIO
 import os
 from pathlib import Path
+
+st.set_page_config(page_title="Análise MVI 10º BPM", layout="wide")
 
 # 🔐 Tela de login com sessão persistente
 def autenticar():
@@ -58,15 +59,9 @@ ACESSO RESTRITO
 </div>
 ''', unsafe_allow_html=True)
 
-    
-#Conterudo após o login 
-st.set_page_config(page_title="Análise MVI 10º BPM", layout="wide")
-
-st.markdown("## 📊 Análise MVI 10º BPM")
-st.markdown("Visualização interativa de Mortes Violentas Intencionais (CVLI) e outras categorias, com filtros e gráficos atualizados.")
+# ================= DADOS E DASHBOARD =================
 
 @st.cache_data
-#Carrega os dados e Elimina Duplicidade da Tabela
 def carregar_dados():
     df = pd.read_excel("Tabela_de_MVI_2024_2025.xlsx")
     df.columns = [
@@ -77,65 +72,35 @@ def carregar_dados():
     df["Ano"] = df["Data_Fato"].dt.year
     df["Mes"] = df["Data_Fato"].dt.month
     df["Mes_Nome"] = df["Data_Fato"].dt.strftime('%B')
-    
-    # 🔁 Remover linhas duplicadas com base em colunas principais
     df = df.drop_duplicates(subset=["Data_Fato", "Nome_Vitima", "Cidade", "Categoria"])
-    
     return df
-#ATUALIZADO PARA FILAR PELO 10BPM E OUTRAS CIDADES
+
 df = carregar_dados()
 
-# 🔍 Lista fixa das cidades do 10º BPM
 cidades_10bpm = [
     "Palmeira dos Índios", "Igaci", "Estrela de Alagoas", "Minador do Negrão",
     "Cacimbinhas", "Quebrangulo", "Paulo Jacinto", "Mar Vermelho",
     "Belém", "Tanque d Arca", "Maribondo"
 ]
 
-# ✅ Filtro de cidades com todas disponíveis, mas 10º BPM pré-selecionado
-cidades = st.multiselect(
-    "Selecionar Cidades",
-    sorted(df["Cidade"].unique()),
-    default=[c for c in cidades_10bpm if c in df["Cidade"].unique()]
-)
+cidades = st.multiselect("Selecionar Cidades", sorted(df["Cidade"].unique()), default=[c for c in cidades_10bpm if c in df["Cidade"].unique()])
+anos = st.multiselect("Selecionar Anos", sorted(df["Ano"].dropna().unique()), default=sorted(df["Ano"].dropna().unique()))
+categorias = st.multiselect("Selecionar Categorias", sorted(df["Categoria"].unique()), default=sorted(df["Categoria"].unique()))
 
-# ✅ Filtro de anos com todos disponíveis
-anos = st.multiselect(
-    "Selecionar Anos",
-    sorted(df["Ano"].dropna().unique()),
-    default=sorted(df["Ano"].dropna().unique())
-)
+df_filtrado = df[df["Cidade"].isin(cidades) & df["Ano"].isin(anos) & df["Categoria"].isin(categorias)]
 
-# ✅ Filtro de categorias com todos disponíveis
-categorias = st.multiselect(
-    "Selecionar Categorias",
-    sorted(df["Categoria"].unique()),
-    default=sorted(df["Categoria"].unique())
-)
-
-# 🔎 Aplicando filtros
-df_filtrado = df[
-    df["Cidade"].isin(cidades) &
-    df["Ano"].isin(anos) &
-    df["Categoria"].isin(categorias)
-]
-
-
-# Tabela 1: Total por cidade e categoria
+# Tabela 1
 tabela_total = df_filtrado.groupby(["Cidade", "Categoria"]).size().reset_index(name="Total")
 
-# Tabela 2: Comparativo CVLI ano a ano
+# Tabela 2: Comparativo CVLI
 df_cvli = df_filtrado[df_filtrado["Categoria"] == "CVLI"]
-
 cvli_por_ano = df_cvli.groupby(["Cidade", "Ano"]).size().reset_index(name="Total")
 cvli_pivot = cvli_por_ano.pivot(index="Cidade", columns="Ano", values="Total").fillna(0)
 anos_disp = sorted(cvli_pivot.columns.tolist())
 for i in range(1, len(anos_disp)):
     ant, atual = anos_disp[i-1], anos_disp[i]
-    cvli_pivot[f"% Variação {ant}-{atual}"] = (
-    ((cvli_pivot[atual] - cvli_pivot[ant]) / cvli_pivot[ant].replace(0, 1)) * 100
-).round(2)
-cvli_pivot = cvli_pivot.reset_index()
+    cvli_pivot[f"% Variação {ant}-{atual}"] = ((cvli_pivot[atual] - cvli_pivot[ant]) / cvli_pivot[ant].replace(0, 1)) * 100
+cvli_pivot = cvli_pivot.round(2).reset_index()
 
 # Tabela 3: Dias sem mortes
 hoje = pd.to_datetime(datetime.now().date())
@@ -144,44 +109,18 @@ ultimas_mortes["Dias_Sem_Mortes"] = (hoje - ultimas_mortes["Data_Fato"]).dt.days
 quantitativo = df_filtrado.groupby("Cidade").size().reset_index(name="Total_Ocorrencias")
 dias_sem_morte = pd.merge(quantitativo, ultimas_mortes, on="Cidade").rename(columns={"Data_Fato": "Ultima_Morte"})
 
-# Exibição alterada para centralizar 
+# Exibição
 st.markdown("### 🔢 Total por Cidade e Categoria")
-st.markdown(
-    tabela_total.style
-        .set_properties(**{'text-align': 'center'})
-        .hide(axis='index')
-        .to_html(),
-    unsafe_allow_html=True
-)
-
-# 🧮 Colunas de variação percentual (filtrar com segurança)
-colunas_variacao = [col for col in cvli_pivot.columns if isinstance(col, str) and "Variação" in col]
-
-# 🎯 Colunas de totais anuais (anos inteiros como colunas)
-colunas_totais = [col for col in cvli_pivot.columns if isinstance(col, int)]
+st.markdown(tabela_total.style.set_properties(**{'text-align': 'center'}).hide(axis='index').to_html(), unsafe_allow_html=True)
 
 st.markdown("### 📈 Comparativo CVLI Ano a Ano")
-st.markdown(
-    cvli_pivot.style
-        .format({col: "{:.0f}" for col in colunas_totais} | {col: "{:.2f}" for col in colunas_variacao})
-        .set_properties(**{'text-align': 'center'})
-        .hide(axis='index')
-        .to_html(),
-    unsafe_allow_html=True
-)
-
+col_variacoes = [col for col in cvli_pivot.columns if isinstance(col, str) and "Variação" in col]
+col_anos = [col for col in cvli_pivot.columns if isinstance(col, int)]
+st.markdown(cvli_pivot.style.format({col: "{:.0f}" for col in col_anos} | {col: "{:.2f}" for col in col_variacoes}).set_properties(**{'text-align': 'center'}).hide(axis='index').to_html(), unsafe_allow_html=True)
 
 st.markdown("### ⏳ Dias sem Mortes por Cidade")
-st.markdown(
-    dias_sem_morte.style
-        .format({"Dias_Sem_Mortes": "{:.0f}"})
-        .set_properties(**{'text-align': 'center'})
-        .hide(axis='index')
-        .to_html(),
-    unsafe_allow_html=True
-)
+st.markdown(dias_sem_morte.style.format({"Dias_Sem_Mortes": "{:.0f}"}).set_properties(**{'text-align': 'center'}).hide(axis='index').to_html(), unsafe_allow_html=True)
 
-# Botão para exportar todas as tabelas
 def to_excel(dfs: dict):
     output = BytesIO()
     with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
@@ -190,13 +129,8 @@ def to_excel(dfs: dict):
     output.seek(0)
     return output
 
-st.download_button(
-    label="📥 Baixar Todas as Tabelas em Excel",
-    data=to_excel({
-        "Total_Cidade_Categoria": tabela_total,
-        "Comparativo_CVLI": cvli_pivot,
-        "Dias_Sem_Mortes": dias_sem_morte
-    }),
-    file_name="Dash_MVI_Tabelas.xlsx",
-    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-)
+st.download_button("📥 Baixar Todas as Tabelas em Excel", data=to_excel({
+    "Total_Cidade_Categoria": tabela_total,
+    "Comparativo_CVLI": cvli_pivot,
+    "Dias_Sem_Mortes": dias_sem_morte
+}), file_name="Dash_MVI_Tabelas.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
