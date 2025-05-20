@@ -70,22 +70,36 @@ ACESSO RESTRITO
 """, unsafe_allow_html=True)
 
 # 📊 Carregamento e preparo dos dados
+# 📊 Carregamento e preparo dos dados
 def carregar_dados():
-    file_id = "1MNuLlWj6XFHsVgtrp4aUyitApFnFpP5s"
-    url = f"https://docs.google.com/spreadsheets/d/{file_id}/export?format=csv"
-    df = pd.read_csv(url)
-    df.columns = [col.strip() for col in df.columns]
-    df["DATA FATO"] = pd.to_datetime(df["DATA FATO"], dayfirst=True, errors="coerce")
-    df["Ano"] = df["DATA FATO"].dt.year
-    df["Mes"] = df["DATA FATO"].dt.month
-    df["Mes_Nome"] = df["DATA FATO"].dt.strftime('%B')
-    df = df.drop_duplicates(subset=["DATA FATO", "NOME VITIMA", "CIDADE FATO", "CATEGORIA"])
-    return df
+    try:
+        file_id = "1MNuLlWj6XFHsVgtrp4aUyitApFnFpP5s"
+        url = f"https://drive.google.com/uc?export=download&id={file_id}"
 
-if st.button("🔄 Atualizar dados da planilha"):
-    st.cache_data.clear()
+        resposta = requests.get(url)
+        resposta.raise_for_status()  # Garante que não houve erro
 
-df = st.cache_data()(carregar_dados)()
+        arquivo = BytesIO(resposta.content)
+        df = pd.read_excel(arquivo, engine="openpyxl")  # ou "xlrd" se for .xls
+
+        # ✅ Limpeza e criação de colunas auxiliares
+        df.columns = [col.strip() for col in df.columns]
+        df["DATA FATO"] = pd.to_datetime(df["DATA FATO"], dayfirst=True, errors="coerce")
+        df["Ano"] = df["DATA FATO"].dt.year
+        df["Mes"] = df["DATA FATO"].dt.month
+        df["Mes_Nome"] = df["DATA FATO"].dt.strftime('%B')
+        df = df.drop_duplicates(subset=["DATA FATO", "NOME VITIMA", "CIDADE FATO", "CATEGORIA"])
+
+        return df
+    except Exception as e:
+        st.error(f"❌ Erro ao carregar planilha Excel: {e}")
+        return pd.DataFrame()
+
+@st.cache_data
+def dados_cache():
+    return carregar_dados()
+
+df = dados_cache()
 
 # 🎯 Filtros
 cidades_10bpm = [
