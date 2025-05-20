@@ -142,13 +142,7 @@ if meses:
 # ⚠️ Lembre-se de instalar o pacote necessário se ainda não tiver:
 # pip install openpyxl
 
-
-# 📌 Tabela 2:Tabela Total
-tabela_total = df_filtrado.groupby(["CIDADE FATO", "CATEGORIA"]).size().reset_index(name="Total")
-st.markdown("### 🔢 Total por Cidade e Categoria")
-st.markdown(tabela_total.style.set_properties(**{'text-align': 'center'}).hide(axis='index').to_html(), unsafe_allow_html=True)
-
-# 📆 Dias sem Mortes — filtrando apenas CVLI e as cidades selecionadas
+# 📆 Tabela 1 Dias sem Mortes — filtrando apenas CVLI e as cidades selecionadas
 hoje = pd.to_datetime(datetime.now().date())
 
 # 🔎 Filtra somente os dados da categoria CVLI
@@ -177,38 +171,63 @@ st.markdown(
     .to_html(),
     unsafe_allow_html=True
 )
+# 📌 Tabela 2:Tabela Total — mostrando todas as cidades mesmo com 0
+tabela_total = (
+    df_filtrado
+    .groupby(["CIDADE FATO", "CATEGORIA"])
+    .size()
+    .unstack(fill_value=0)
+    .reindex(index=cidades, fill_value=0)
+    .stack()
+    .reset_index(name="Total")
+)
+
+st.markdown("### 🔢 Total por Cidade e Categoria")
+st.markdown(
+    tabela_total
+    .style.set_properties(**{'text-align': 'center'})
+    .hide(axis='index')
+    .to_html(),
+    unsafe_allow_html=True
+)
 
 # Tabela 3: Comparativo CVLI Ano a Ano
 df_cvli = df_filtrado[df_filtrado["CATEGORIA"] == "CVLI"]
-cvli_por_ano = df_cvli.groupby(["CIDADE FATO", "Ano"]).size().reset_index(name="Total")
-cvli_pivot = cvli_por_ano.pivot(index="CIDADE FATO", columns="Ano", values="Total").fillna(0).astype(int)
+cvli_por_ano = df_cvli.groupby(["CIDADE FATO", "Ano"]).size().unstack(fill_value=0)
+cvli_por_ano = cvli_por_ano.reindex(index=cidades, fill_value=0)
 
-anos_disp = sorted(cvli_pivot.columns.tolist())
+anos_disp = sorted(cvli_por_ano.columns.tolist())
 for i in range(1, len(anos_disp)):
     ant, atual = anos_disp[i - 1], anos_disp[i]
     col_var = f"% Variação {ant}-{atual}"
-    cvli_pivot[col_var] = ((cvli_pivot[atual] - cvli_pivot[ant]) / cvli_pivot[ant].replace(0, 1)) * 100
-    cvli_pivot[col_var] = cvli_pivot[col_var].round(0).astype(int)
+    cvli_por_ano[col_var] = ((cvli_por_ano[atual] - cvli_por_ano[ant]) / cvli_por_ano[ant].replace(0, 1)) * 100
+    cvli_por_ano[col_var] = cvli_por_ano[col_var].round(0).astype(int)
 
-cvli_pivot = cvli_pivot.reset_index()
+cvli_pivot = cvli_por_ano.reset_index()
 
 st.markdown("### 📈 Comparativo CVLI Ano a Ano")
 col_anos = [col for col in cvli_pivot.columns if isinstance(col, int)]
 col_var = [col for col in cvli_pivot.columns if isinstance(col, str) and "Variação" in col]
 
 st.markdown(
-    cvli_pivot.style
-    .format({**{col: "{:.0f}" for col in col_anos + col_var}})
+    cvli_pivot
+    .style.format({**{col: "{:.0f}" for col in col_anos + col_var}})
     .set_properties(**{'text-align': 'center'})
     .hide(axis='index')
     .to_html(),
     unsafe_allow_html=True
 )
 
-# 📊 Comparativo CVLI Mês a Mês
-# Tabela 4: Comparativo CVLI Mês a Mês
+# 📊 Tabela 4 Comparativo CVLI Mês a Mês
 if len(anos) > 1:
     cvli_mes = df_cvli.groupby(["CIDADE FATO", "Ano", "Mes"]).size().reset_index(name="Total")
+
+    todas_combinacoes = pd.MultiIndex.from_product(
+        [cidades, anos, sorted(df["Mes"].dropna().unique())],
+        names=["CIDADE FATO", "Ano", "Mes"]
+    )
+
+    cvli_mes = cvli_mes.set_index(["CIDADE FATO", "Ano", "Mes"]).reindex(todas_combinacoes, fill_value=0).reset_index()
     cvli_mes_pivot = cvli_mes.pivot(index=["CIDADE FATO", "Mes"], columns="Ano", values="Total").fillna(0).astype(int)
 
     anos_mes = sorted([col for col in cvli_mes_pivot.columns if isinstance(col, int)])
@@ -225,8 +244,8 @@ if len(anos) > 1:
     col_var_mes = [col for col in cvli_mes_pivot.columns if isinstance(col, str) and "Variação" in col]
 
     st.markdown(
-        cvli_mes_pivot.style
-        .format({**{col: "{:.0f}" for col in col_anos_mes + col_var_mes}})
+        cvli_mes_pivot
+        .style.format({**{col: "{:.0f}" for col in col_anos_mes + col_var_mes}})
         .set_properties(**{'text-align': 'center'})
         .hide(axis='index')
         .to_html(),
