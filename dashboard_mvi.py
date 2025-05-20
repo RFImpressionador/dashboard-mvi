@@ -92,7 +92,8 @@ df_filtrado = df[
 tabela_total = df_filtrado.groupby(["Cidade", "Categoria"]).size().reset_index(name="Total")
 
 # Tabela 2: Comparativo CVLI ano a ano
-df_cvli = df[df["Categoria"] == "CVLI"]
+df_cvli = df_filtrado[df_filtrado["Categoria"] == "CVLI"]
+
 cvli_por_ano = df_cvli.groupby(["Cidade", "Ano"]).size().reset_index(name="Total")
 cvli_pivot = cvli_por_ano.pivot(index="Cidade", columns="Ano", values="Total").fillna(0)
 anos_disp = sorted(cvli_pivot.columns.tolist())
