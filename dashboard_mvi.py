@@ -125,6 +125,9 @@ ultimas_mortes = df_filtrado.groupby("CIDADE FATO")["DATA FATO"].max().reset_ind
 ultimas_mortes["Dias_Sem_Mortes"] = (hoje - ultimas_mortes["DATA FATO"]).dt.days
 quantitativo = df_filtrado.groupby("CIDADE FATO").size().reset_index(name="Total_Ocorrencias")
 dias_sem_morte = pd.merge(quantitativo, ultimas_mortes, on="CIDADE FATO").rename(columns={"DATA FATO": "Ultima_Morte"})
+# 🔁 Aplica formatação de data brasileira
+dias_sem_morte["Ultima_Morte"] = dias_sem_morte["Ultima_Morte"].dt.strftime("%d/%m/%Y %H:%M")
+
 st.markdown("### ⏳ Dias sem Mortes por Cidade")
 st.markdown(dias_sem_morte.style.format({"Dias_Sem_Mortes": "{:.0f}"}).set_properties(**{'text-align': 'center'}).hide(axis='index').to_html(), unsafe_allow_html=True)
 
