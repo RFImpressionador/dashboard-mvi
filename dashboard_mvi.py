@@ -78,23 +78,23 @@ ACESSO RESTRITO
 @st.cache_data
 def carregar_dados():
     df = pd.read_excel("Tabela_de_MVI_2024_2025.xlsx")
-    df.columns = [
-        "Index", "ID", "Data_Fato", "Nome_Vitima", "Sexo", "Mae_Vitima", "Cidade", 
-        "Bairro", "Categoria", "Subcategoria", "BO_PC", "BO_SISGOU", "CAD"
-    ]
 
-    # ✅ Converte "Data_Fato" para datetime completo (corrige dia/mês/ano e hora)
-    df["Data_Fato"] = pd.to_datetime(df["Data_Fato"], dayfirst=True, errors="coerce")
+    # Remove espaços em branco invisíveis dos nomes de colunas
+    df.columns = [col.strip() for col in df.columns]
 
-    # ✅ Extrai informações de tempo
-    df["Ano"] = df["Data_Fato"].dt.year
-    df["Mes"] = df["Data_Fato"].dt.month
-    df["Mes_Nome"] = df["Data_Fato"].dt.strftime('%B')  # Nome do mês por extenso
+    # Converte coluna de data
+    df["DATA FATO"] = pd.to_datetime(df["DATA FATO"], dayfirst=True, errors="coerce")
 
-    # ✅ Remove duplicatas baseando-se em múltiplas colunas
-    df = df.drop_duplicates(subset=["Data_Fato", "Nome_Vitima", "Cidade", "Categoria"])
+    # Extrai campos de data
+    df["Ano"] = df["DATA FATO"].dt.year
+    df["Mes"] = df["DATA FATO"].dt.month
+    df["Mes_Nome"] = df["DATA FATO"].dt.strftime('%B')
+
+    # Remove duplicatas
+    df = df.drop_duplicates(subset=["DATA FATO", "NOME VITIMA", "CIDADE FATO", "SUBJETIVIDADE"])
 
     return df
+
 
 
 df = carregar_dados()
