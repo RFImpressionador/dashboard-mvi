@@ -47,8 +47,6 @@ def aplicar_css_personalizado():
 aplicar_css_personalizado()
 
 
-# ⚠️ Configuração de página
-st.set_page_config(page_title="Análise MVI 10º BPM", layout="wide")
 
 # 📅 Data da última modificação da planilha
 caminho_arquivo = Path("Tabela_de_MVI_2024_2025.xlsx")
