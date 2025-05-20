@@ -1,0 +1,90 @@
+
+/* Plano de fundo e fontes */
+body {
+    background-color: #101214;
+    color: #FFFFFF;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Títulos */
+h1, h2, h3 {
+    font-weight: bold;
+    color: #FFFFFF;
+}
+
+/* Botões personalizados */
+.stButton>button {
+    background-color: #2d7dd2;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+    padding: 8px 24px;
+}
+.stButton>button:hover {
+    background-color: #1b4f91;
+    transition: 0.3s ease-in-out;
+}
+
+/* Avisos vermelhos */
+.avisos {
+    border: 2px solid red;
+    padding: 10px;
+    color: red;
+    text-align: center;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+/* Logo centralizada */
+.logo-container {
+    text-align: center;
+    margin-top: 5px;
+    margin-bottom: 15px;
+}
+
+/* Texto institucional */
+.texto-institucional {
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+    margin-top: 5px;
+}
+
+/* Títulos das seções */
+.titulo-secao {
+    font-size: 20px;
+    text-align: center;
+    font-weight: bold;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid white;
+}
+
+/* Botão de download */
+.stDownloadButton > button {
+    background-color: #004080;
+    color: white;
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 10px 20px;
+    margin: 20px auto;
+    display: block;
+    border: none;
+    transition: 0.3s;
+}
+.stDownloadButton > button:hover {
+    background-color: #0070ff;
+    cursor: pointer;
+}
+
+/* Tabelas */
+thead tr th {
+    background-color: #202225;
+    color: #ffffff;
+    font-weight: bold;
+}
+tbody tr {
+    background-color: #1a1c1f;
+    color: #ffffff;
+}
