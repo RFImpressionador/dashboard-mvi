@@ -3,6 +3,7 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 from io import BytesIO
+import os  # ✅ ESSENCIAL PARA PEGAR A DATA DO ARQUIVO
 
 # 🔐 Tela de login com sessão persistente
 def autenticar():
