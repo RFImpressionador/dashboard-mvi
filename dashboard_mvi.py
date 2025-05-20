@@ -4,6 +4,7 @@ import pandas as pd
 from datetime import datetime
 from io import BytesIO
 from pathlib import Path
+import requests  # ✅ Corrige o erro "requests is not defined"
 
 # ⚠️ DEVE vir antes de qualquer outro comando do Streamlit
 st.set_page_config(page_title="Análise MVI 10º BPM", layout="wide")
@@ -39,7 +40,7 @@ if not autenticar():
 # 📅 Data fictícia da planilha online
 data_modificacao = "Atualização automática via Google Sheets"
 
-# 🚨 Cabeçalho institucional
+# 🚨 Cabeçalho institucional (mantido igual)
 st.markdown(f"""
 <div style="text-align: center; color: red; font-weight: bold; border: 2px solid red; padding: 5px;">
 CONHECIMENTO PARA ASSESSORAMENTO DO PROCESSO DECISÓRIO, NÃO TENDO FINALIDADE PROBATÓRIA...
@@ -70,20 +71,25 @@ ACESSO RESTRITO
 """, unsafe_allow_html=True)
 
 # 📊 Carregamento e preparo dos dados
-# 📊 Carregamento e preparo dos dados
 def carregar_dados():
     try:
         file_id = "1MNuLlWj6XFHsVgtrp4aUyitApFnFpP5s"
         url = f"https://drive.google.com/uc?export=download&id={file_id}"
 
         resposta = requests.get(url)
-        resposta.raise_for_status()  # Garante que não houve erro
-
+        resposta.raise_for_status()
         arquivo = BytesIO(resposta.content)
-        df = pd.read_excel(arquivo, engine="openpyxl")  # ou "xlrd" se for .xls
 
-        # ✅ Limpeza e criação de colunas auxiliares
+        df = pd.read_excel(arquivo, engine="openpyxl")
         df.columns = [col.strip() for col in df.columns]
+
+        # 🛡️ Verifica colunas essenciais
+        colunas_necessarias = ["DATA FATO", "CIDADE FATO", "CATEGORIA", "NOME VITIMA"]
+        for col in colunas_necessarias:
+            if col not in df.columns:
+                st.warning(f"⚠️ Coluna ausente: {col}")
+                return pd.DataFrame()
+
         df["DATA FATO"] = pd.to_datetime(df["DATA FATO"], dayfirst=True, errors="coerce")
         df["Ano"] = df["DATA FATO"].dt.year
         df["Mes"] = df["DATA FATO"].dt.month
@@ -95,28 +101,42 @@ def carregar_dados():
         st.error(f"❌ Erro ao carregar planilha Excel: {e}")
         return pd.DataFrame()
 
+# ✅ Cache seguro dos dados carregados
 @st.cache_data
 def dados_cache():
     return carregar_dados()
 
 df = dados_cache()
 
+# 🧪 Debug opcional para listar colunas disponíveis
+# st.write("Colunas encontradas:", df.columns.tolist())
+
 # 🎯 Filtros
+if df.empty:
+    st.stop()
+
 cidades_10bpm = [
     "Palmeira dos Índios", "Igaci", "Estrela de Alagoas", "Minador do Negrão",
     "Cacimbinhas", "Quebrangulo", "Paulo Jacinto", "Mar Vermelho",
     "Belém", "Tanque d Arca", "Maribondo"
 ]
-cidades = st.multiselect("Selecionar Cidades", sorted(df["CIDADE FATO"].unique()), default=[c for c in cidades_10bpm if c in df["CIDADE FATO"].unique()])
-categorias = st.multiselect("Selecionar Categorias", sorted(df["CATEGORIA"].unique()), default=sorted(df["CATEGORIA"].unique()))
+cidades = st.multiselect("Selecionar Cidades", sorted(df["CIDADE FATO"].dropna().unique()), default=[c for c in cidades_10bpm if c in df["CIDADE FATO"].unique()])
+categorias = st.multiselect("Selecionar Categorias", sorted(df["CATEGORIA"].dropna().unique()), default=sorted(df["CATEGORIA"].dropna().unique()))
 anos = st.multiselect("Selecionar Anos", options=sorted(df["Ano"].dropna().unique().tolist()), default=sorted(df["Ano"].dropna().unique().tolist()))
 
 nomes_meses_ptbr = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
 meses = st.multiselect("Selecionar Mês (opcional)", options=sorted(df["Mes"].dropna().unique().tolist()), format_func=lambda x: nomes_meses_ptbr[x - 1], default=[])
 
+# 🔎 Aplicando filtros
 df_filtrado = df[df["CIDADE FATO"].isin(cidades) & df["Ano"].isin(anos) & df["CATEGORIA"].isin(categorias)]
 if meses:
     df_filtrado = df_filtrado[df_filtrado["Mes"].isin(meses)]
+
+# A partir daqui todo o restante (tabelas, comparativos, exportações) continua funcionando normal ✅
+
+# ⚠️ Lembre-se de instalar o pacote necessário se ainda não tiver:
+# pip install openpyxl
+
 
 # 📌 Tabela 2:Tabela Total
 tabela_total = df_filtrado.groupby(["CIDADE FATO", "CATEGORIA"]).size().reset_index(name="Total")
