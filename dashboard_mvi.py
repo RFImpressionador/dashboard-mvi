@@ -105,7 +105,9 @@ cidades_10bpm = [
     "Belém", "Tanque d Arca", "Maribondo"
 ]
 # ✅ Filtro de cidades com todas disponíveis, mas 10º BPM pré-selecionado
-cidades = st.multiselect("Selecionar Cidades", sorted(df["Cidade"].unique()), default=[c for c in cidades_10bpm if c in df["Cidade"].unique()])
+cidades = st.multiselect("Selecionar Cidades", sorted(df["CIDADE FATO"]
+.unique()), default=[c for c in cidades_10bpm if c in df["CIDADE FATO"]
+.unique()])
 # ✅ Filtro de categorias com todos disponíveis
 categorias = st.multiselect("Selecionar Categorias", sorted(df["Categoria"].unique()), default=sorted(df["Categoria"].unique()))
 # ✅ Filtro de anos com todos disponíveis
