@@ -46,7 +46,7 @@ ACESSO RESTRITO
 <br>
 
 <div style="text-align: center;">
-    <img src="https://raw.githubusercontent.com/RFImpressionador/dashboard-mvi/main/logo_p2_10bpm.png" width="120">
+    <img src="https://raw.githubusercontent.com/RFImpressionador/dashboard-mvi/main/logo_p2_10bpm.png" width="90">
 </div>
 
 <br>
