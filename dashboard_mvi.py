@@ -1,56 +1,46 @@
 
+
 import streamlit as st
 import pandas as pd
 from datetime import datetime
 from io import BytesIO
-import os  # ✅ ESSENCIAL PARA PEGAR A DATA DO ARQUIVO
+import os
+from pathlib import Path
 
 # 🔐 Tela de login com sessão persistente
 def autenticar():
     if "autenticado" not in st.session_state:
         st.session_state.autenticado = False
-
     if not st.session_state.autenticado:
         st.title("🔐 Painel Protegido")
         senha = st.text_input("Digite a senha de acesso:", type="password")
         if senha == "pmal2025":
             st.session_state.autenticado = True
             st.success("✅ Acesso liberado!")
-            st.rerun()  # ✅ versão correta
+            st.rerun()
         elif senha:
             st.error("❌ Senha incorreta.")
         return False
     return True
 
-
-# Bloqueia o acesso se não estiver autenticado
 if not autenticar():
     st.stop()
 
-#---------
-# ✅ 👇 CABEÇALHO INSTITUCIONAL AQUI (INSIRA AGORA)
-
-from pathlib import Path
-
+# ✅ Cabeçalho institucional
 caminho_arquivo = Path("Tabela_de_MVI_2024_2025.xlsx")
-
 if caminho_arquivo.exists():
-    data_modificacao = datetime.fromtimestamp(caminho_arquivo.stat().st_mtime).strftime("%d/%m/%Y")
+    data_atualizacao = datetime.fromtimestamp(caminho_arquivo.stat().st_mtime).strftime("%d/%m/%Y")
 else:
-    data_modificacao = "Arquivo não encontrado"
+    data_atualizacao = "Arquivo não encontrado"
 
-
-st.markdown("""
+st.markdown(f'''
 <div style="text-align: center; color: red; font-weight: bold; border: 2px solid red; padding: 5px;">
 CONHECIMENTO PARA ASSESSORAMENTO DO PROCESSO DECISÓRIO, NÃO TENDO FINALIDADE PROBATÓRIA. CONFORME PREVISTO NA DNISP, ESTE DOCUMENTO E SEUS ANEXOS NÃO DEVEM SER INSERIDOS EM PROCEDIMENTOS E/OU PROCESSOS DE QUALQUER NATUREZA.
 </div>
-
 <div style="text-align: center; color: red; font-weight: bold; border: 2px solid red; padding: 5px; margin-top: 5px;">
 ACESSO RESTRITO
 </div>
-
 <br>
-
 <div style="text-align: center; font-weight: bold;">
     ESTADO DE ALAGOAS<br>
     SECRETARIA DE SEGURANÇA PÚBLICA<br>
@@ -59,18 +49,15 @@ ACESSO RESTRITO
     CISP II – 10º BATALHÃO DE POLÍCIA MILITAR (10º BPM)<br>
     <a href="mailto:p2.10bpm@pm.al.gov.br">p2.10bpm@pm.al.gov.br</a>
 </div>
-
 <br>
-
 <div style="text-align: center; font-size: 20px; font-weight: bold;">
     RELATÓRIO DE INTELIGÊNCIA
 </div>
-
 <div style="text-align: center; font-size: 14px;">
-    Última atualização da planilha: <strong>{}</strong>
+    Última atualização da planilha: <strong>{data_atualizacao}</strong>
 </div>
-""".format(data_atualizacao), unsafe_allow_html=True)
-#------------
+''', unsafe_allow_html=True)
+
     
 #Conterudo após o login 
 st.set_page_config(page_title="Análise MVI 10º BPM", layout="wide")
