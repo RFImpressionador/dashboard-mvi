@@ -101,12 +101,9 @@ def carregar_dados():
         st.error(f"❌ Erro ao carregar planilha Excel: {e}")
         return pd.DataFrame()
 
-# ✅ Cache seguro dos dados carregados
-@st.cache_data
-def dados_cache():
-    return carregar_dados()
+# ✅ Carregar Dados 
+df = carregar_dados()
 
-df = dados_cache()
 
 # 🧪 Debug opcional para listar colunas disponíveis
 # st.write("Colunas encontradas:", df.columns.tolist())
