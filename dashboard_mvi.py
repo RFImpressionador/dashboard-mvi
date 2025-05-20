@@ -1,14 +1,12 @@
+# Importações
 import streamlit as st
 import pandas as pd
 from datetime import datetime
 from io import BytesIO
-import os
 from pathlib import Path
+import os
 
-# ✅ ESTE COMANDO DEVE SER O PRIMEIRO DO STREAMLIT
-st.set_page_config(page_title="Análise MVI 10º BPM", layout="wide")
-
-# 🔐 Tela de login com sessão persistente
+# 🛡️ LOGIN
 def autenticar():
     if "autenticado" not in st.session_state:
         st.session_state.autenticado = False
@@ -27,15 +25,15 @@ def autenticar():
 if not autenticar():
     st.stop()
 
-# ✅ Cabeçalho institucional
+# ⚠️ A linha abaixo deve ser a PRIMEIRA após autenticação (ANTES de qualquer markdown ou imagem):
+st.set_page_config(page_title="Análise MVI 10º BPM", layout="wide")
+
+# 🕒 Verifica a data da última atualização da planilha
 caminho_arquivo = Path("Tabela_de_MVI_2024_2025.xlsx")
-if caminho_arquivo.exists():
-    data_atualizacao = datetime.fromtimestamp(caminho_arquivo.stat().st_mtime).strftime("%d/%m/%Y")
-else:
-    data_atualizacao = "Arquivo não encontrado"
+data_modificacao = datetime.fromtimestamp(caminho_arquivo.stat().st_mtime).strftime("%d/%m/%Y") if caminho_arquivo.exists() else "Arquivo não encontrado"
 
-
-st.markdown(f"""
+# 🚨 Cabeçalho institucional completo
+st.markdown("""
 <div style="text-align: center; color: red; font-weight: bold; border: 2px solid red; padding: 5px;">
 CONHECIMENTO PARA ASSESSORAMENTO DO PROCESSO DECISÓRIO, NÃO TENDO FINALIDADE PROBATÓRIA. CONFORME PREVISTO NA DNISP, ESTE DOCUMENTO E SEUS ANEXOS NÃO DEVEM SER INSERIDOS EM PROCEDIMENTOS E/OU PROCESSOS DE QUALQUER NATUREZA.
 </div>
