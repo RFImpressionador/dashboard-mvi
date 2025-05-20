@@ -43,14 +43,15 @@ CONHECIMENTO PARA ASSESSORAMENTO DO PROCESSO DECISÓRIO, NÃO TENDO FINALIDADE P
 <div style="text-align: center; color: red; font-weight: bold; border: 2px solid red; padding: 5px; margin-top: 5px;">
 ACESSO RESTRITO
 </div>
+""", unsafe_allow_html=True)
 
-<!-- 👁️ IMAGEM CENTRALIZADA -->
-<div style="text-align: center; margin-top: 10px; margin-bottom: -10px;">
-    <img src="Logo4 P2 10BPM.png" width="120">
-</div>
+# 📷 Insere a imagem da logo centralizada
+st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
+st.image("logo_p2_10bpm.png", width=120)
+st.markdown("</div>", unsafe_allow_html=True)
 
-<br>
-
+# 🏛️ Texto institucional
+st.markdown(f"""
 <div style="text-align: center; font-weight: bold;">
     ESTADO DE ALAGOAS<br>
     SECRETARIA DE SEGURANÇA PÚBLICA<br>
@@ -67,7 +68,7 @@ ACESSO RESTRITO
 </div>
 
 <div style="text-align: center; font-size: 14px;">
-    Última atualização da planilha: <strong>{data_atualizacao}</strong>
+    Última atualização da planilha: <strong>{data_modificacao}</strong>
 </div>
 """, unsafe_allow_html=True)
 
