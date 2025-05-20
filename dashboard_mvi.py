@@ -91,7 +91,7 @@ def carregar_dados():
     df["Mes_Nome"] = df["DATA FATO"].dt.strftime('%B')
 
     # Remove duplicatas
-    df = df.drop_duplicates(subset=["DATA FATO", "NOME VITIMA", "CIDADE FATO", "SUBJETIVIDADE"])
+    df = df.drop_duplicates(subset=["DATA FATO", "NOME VITIMA", "CIDADE FATO","CATEGORIA"])
 
     return df
 
@@ -109,7 +109,9 @@ cidades = st.multiselect("Selecionar Cidades", sorted(df["CIDADE FATO"]
 .unique()), default=[c for c in cidades_10bpm if c in df["CIDADE FATO"]
 .unique()])
 # ✅ Filtro de categorias com todos disponíveis
-categorias = st.multiselect("Selecionar Categorias", sorted(df["Categoria"].unique()), default=sorted(df["Categoria"].unique()))
+categorias = st.multiselect("Selecionar Categorias", sorted(df["CATEGORIA"]
+.unique()), default=sorted(df["CATEGORIA"]
+.unique()))
 # ✅ Filtro de anos com todos disponíveis
 anos = st.multiselect(
     "Selecionar Anos",
@@ -128,31 +130,40 @@ meses = st.multiselect(
 df_filtrado = df[
     df["CIDADE FATO"].isin(cidades) &
     df["Ano"].isin(anos) &
-    df["SUBJETIVIDADE"].isin(categorias)
+    df["CATEGORIA"].isin(categorias)
 ]
 
 if meses:
     df_filtrado = df_filtrado[df_filtrado["Mes"].isin(meses)]
 
 # Tabela 1
-tabela_total = df_filtrado.groupby(["Cidade", "Categoria"]).size().reset_index(name="Total")
+tabela_total = df_filtrado.groupby(["CIDADE FATO", "CATEGORIA"]).size().reset_index(name="Total")
 
-# Tabela 2: Comparativo CVLI
-df_cvli = df_filtrado[df_filtrado["Categoria"] == "CVLI"]
-cvli_por_ano = df_cvli.groupby(["Cidade", "Ano"]).size().reset_index(name="Total")
-cvli_pivot = cvli_por_ano.pivot(index="Cidade", columns="Ano", values="Total").fillna(0)
+# Tabela 2: Dias sem mortes
+hoje = pd.to_datetime(datetime.now().date())
+ultimas_mortes = df_filtrado.groupby("CIDADE FATO")["DATA FATO"].max().reset_index()
+ultimas_mortes["Dias_Sem_Mortes"] = (hoje - ultimas_mortes["DATA FATO"]).dt.days
+quantitativo = df_filtrado.groupby("CIDADE FATO").size().reset_index(name="Total_Ocorrencias")
+dias_sem_morte = pd.merge(quantitativo, ultimas_mortes, on="CIDADE FATO").rename(columns={"DATA FATO": "Ultima_Morte"})
+
+# Tabela 3: Comparativo CVLI
+df_cvli = df_filtrado[df_filtrado["CATEGORIA"] == "CVLI"]
+cvli_por_ano = df_cvli.groupby(["CIDADE FATO", "Ano"]).size().reset_index(name="Total")
+cvli_pivot = cvli_por_ano.pivot(index="CIDADE FATO", columns="Ano", values="Total").fillna(0)
 anos_disp = sorted(cvli_pivot.columns.tolist())
 for i in range(1, len(anos_disp)):
     ant, atual = anos_disp[i-1], anos_disp[i]
     cvli_pivot[f"% Variação {ant}-{atual}"] = ((cvli_pivot[atual] - cvli_pivot[ant]) / cvli_pivot[ant].replace(0, 1)) * 100
 cvli_pivot = cvli_pivot.round(2).reset_index()
 
-# Tabela 3: Dias sem mortes
-hoje = pd.to_datetime(datetime.now().date())
-ultimas_mortes = df_filtrado.groupby("Cidade")["Data_Fato"].max().reset_index()
-ultimas_mortes["Dias_Sem_Mortes"] = (hoje - ultimas_mortes["Data_Fato"]).dt.days
-quantitativo = df_filtrado.groupby("Cidade").size().reset_index(name="Total_Ocorrencias")
-dias_sem_morte = pd.merge(quantitativo, ultimas_mortes, on="Cidade").rename(columns={"Data_Fato": "Ultima_Morte"})
+# Tabela 4: Comparativo CVLI Mês a Mês por Ano
+if len(anos) > 1:
+    cvli_mes = df_cvli.groupby(["CIDADE FATO", "Ano", "Mes"]).size().reset_index(name="Total")
+    cvli_mes_pivot = cvli_mes.pivot_table(index=["CIDADE FATO", "Mes"], columns="Ano", values="Total", fill_value=0)
+
+    st.markdown("### 📊 Comparativo CVLI Mês a Mês")
+    st.markdown(cvli_mes_pivot.reset_index().style.set_properties(**{'text-align': 'center'}).hide(axis='index').to_html(), unsafe_allow_html=True)
+
 
 # Exibição
 st.markdown("### 🔢 Total por Cidade e Categoria")
