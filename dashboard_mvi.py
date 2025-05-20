@@ -1,3 +1,4 @@
+
 # ✅ Importações
 import streamlit as st
 import pandas as pd
@@ -49,7 +50,7 @@ aplicar_css_personalizado()
 
 
 # 📅 Data da última modificação da planilha
-caminho_arquivo = Path("Tabela_de_MVI_2024_2025.xlsx")
+caminho_arquivo = Path("Tabela_de_MVI_2024_2025.xlsm")
 data_modificacao = datetime.fromtimestamp(caminho_arquivo.stat().st_mtime).strftime("%d/%m/%Y")
 
 # 🚨 Cabeçalho institucional
@@ -85,7 +86,7 @@ ACESSO RESTRITO
 # 📊 Carregamento e preparo dos dados
 @st.cache_data
 def carregar_dados():
-    df = pd.read_excel("Tabela_de_MVI_2024_2025.xlsx")
+    df = pd.read_excel("Tabela_de_MVI_2024_2025.xlsm")
     df.columns = [col.strip() for col in df.columns]
     df["DATA FATO"] = pd.to_datetime(df["DATA FATO"], dayfirst=True, errors="coerce")
     df["Ano"] = df["DATA FATO"].dt.year
@@ -185,7 +186,7 @@ if len(anos) > 1:
 # 📥 Exportação
 def to_excel(dfs: dict):
     output = BytesIO()
-    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+    with pd.ExcelWriter(output, engine='xlsmwriter') as writer:
         for name, df in dfs.items():
             df.to_excel(writer, sheet_name=name[:31], index=False)
     output.seek(0)
