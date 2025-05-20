@@ -25,6 +25,43 @@ def autenticar():
 # Bloqueia o acesso se não estiver autenticado
 if not autenticar():
     st.stop()
+
+#---------
+# ✅ 👇 CABEÇALHO INSTITUCIONAL AQUI (INSIRA AGORA)
+data_modificacao = os.path.getmtime("Tabela_de_MVI_2023_2025.xlsx")
+data_atualizacao = datetime.fromtimestamp(data_modificacao).strftime("%d/%m/%Y")
+
+st.markdown("""
+<div style="text-align: center; color: red; font-weight: bold; border: 2px solid red; padding: 5px;">
+CONHECIMENTO PARA ASSESSORAMENTO DO PROCESSO DECISÓRIO, NÃO TENDO FINALIDADE PROBATÓRIA. CONFORME PREVISTO NA DNISP, ESTE DOCUMENTO E SEUS ANEXOS NÃO DEVEM SER INSERIDOS EM PROCEDIMENTOS E/OU PROCESSOS DE QUALQUER NATUREZA.
+</div>
+
+<div style="text-align: center; color: red; font-weight: bold; border: 2px solid red; padding: 5px; margin-top: 5px;">
+ACESSO RESTRITO
+</div>
+
+<br>
+
+<div style="text-align: center; font-weight: bold;">
+    ESTADO DE ALAGOAS<br>
+    SECRETARIA DE SEGURANÇA PÚBLICA<br>
+    POLÍCIA MILITAR DE ALAGOAS<br>
+    COMANDO DE POLICIAMENTO DA REGIÃO DO AGRESTE (CPRA)<br>
+    CISP II – 10º BATALHÃO DE POLÍCIA MILITAR (10º BPM)<br>
+    <a href="mailto:p2.10bpm@pm.al.gov.br">p2.10bpm@pm.al.gov.br</a>
+</div>
+
+<br>
+
+<div style="text-align: center; font-size: 20px; font-weight: bold;">
+    RELATÓRIO DE INTELIGÊNCIA
+</div>
+
+<div style="text-align: center; font-size: 14px;">
+    Última atualização da planilha: <strong>{}</strong>
+</div>
+""".format(data_atualizacao), unsafe_allow_html=True)
+#------------
     
 #Conterudo após o login 
 st.set_page_config(page_title="Análise MVI 10º BPM", layout="wide")
