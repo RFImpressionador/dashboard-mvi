@@ -29,8 +29,16 @@ if not autenticar():
 
 #---------
 # ✅ 👇 CABEÇALHO INSTITUCIONAL AQUI (INSIRA AGORA)
-data_modificacao = os.path.getmtime("Tabela_de_MVI_2023_2025.xlsx")
-data_atualizacao = datetime.fromtimestamp(data_modificacao).strftime("%d/%m/%Y")
+
+from pathlib import Path
+
+caminho_arquivo = Path("Tabela_de_MVI_2024_2025.xlsx")
+
+if caminho_arquivo.exists():
+    data_modificacao = datetime.fromtimestamp(caminho_arquivo.stat().st_mtime).strftime("%d/%m/%Y")
+else:
+    data_modificacao = "Arquivo não encontrado"
+
 
 st.markdown("""
 <div style="text-align: center; color: red; font-weight: bold; border: 2px solid red; padding: 5px;">
