@@ -201,16 +201,25 @@ st.markdown(
 
 # 📊 Tabela 4 Comparativo CVLI Mês a Mês
 if len(anos) > 1:
-    cvli_mes = df_cvli.groupby(["CIDADE FATO", "Ano", "Mes"]).size().reset_index(name="Total")
+    meses_filtrados = sorted(meses) if meses else list(range(1, 13))
 
+    # Gera todas as combinações possíveis de cidades, anos e meses (de acordo com filtro)
     todas_combinacoes = pd.MultiIndex.from_product(
-        [cidades, anos, sorted(df["Mes"].dropna().unique())],
+        [cidades, anos, meses_filtrados],
         names=["CIDADE FATO", "Ano", "Mes"]
     )
 
+    # Filtra os dados
+    df_cvli = df_filtrado[df_filtrado["CATEGORIA"] == "CVLI"]
+    cvli_mes = df_cvli.groupby(["CIDADE FATO", "Ano", "Mes"]).size().reset_index(name="Total")
+
+    # Reindexa com todas as combinações
     cvli_mes = cvli_mes.set_index(["CIDADE FATO", "Ano", "Mes"]).reindex(todas_combinacoes, fill_value=0).reset_index()
+
+    # Faz pivot para visualização
     cvli_mes_pivot = cvli_mes.pivot(index=["CIDADE FATO", "Mes"], columns="Ano", values="Total").fillna(0).astype(int)
 
+    # Calcula variações percentuais entre os anos selecionados
     anos_mes = sorted([col for col in cvli_mes_pivot.columns if isinstance(col, int)])
     for i in range(1, len(anos_mes)):
         ant, atual = anos_mes[i - 1], anos_mes[i]
@@ -218,6 +227,7 @@ if len(anos) > 1:
         cvli_mes_pivot[col_var] = ((cvli_mes_pivot[atual] - cvli_mes_pivot[ant]) / cvli_mes_pivot[ant].replace(0, 1)) * 100
         cvli_mes_pivot[col_var] = cvli_mes_pivot[col_var].round(0).astype(int)
 
+    # Exibir tabela
     cvli_mes_pivot = cvli_mes_pivot.reset_index()
 
     st.markdown("### 📊 Comparativo CVLI Mês a Mês")
@@ -232,6 +242,7 @@ if len(anos) > 1:
         .to_html(),
         unsafe_allow_html=True
     )
+
 
 # 📥 Exportação
 def to_excel(dfs: dict):
