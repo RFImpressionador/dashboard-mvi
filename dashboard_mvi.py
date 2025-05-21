@@ -125,34 +125,24 @@ if meses:
 # pip install openpyxl
 
 # 📆 Tabela 1 Dias sem Mortes — filtrando apenas CVLI e as cidades selecionadas
+# 📆 Dias sem Mortes por Cidade — apenas CVLI, mostra todas as cidades mesmo sem dados
 hoje = pd.to_datetime(datetime.now().date())
+df_cvli = df[(df["CATEGORIA"] == "CVLI") & (df["CIDADE FATO"].isin(cidades))]
+ultimas_mortes = df_cvli.groupby("CIDADE FATO")["DATA FATO"].max().reindex(cidades)
+ultimas_mortes = ultimas_mortes.reset_index().rename(columns={"DATA FATO": "Ultima_Morte"})
+ultimas_mortes["Dias_Sem_Mortes"] = (hoje - ultimas_mortes["Ultima_Morte"]).dt.days
+ultimas_mortes["Ultima_Morte"] = ultimas_mortes["Ultima_Morte"].dt.strftime("%d/%m/%Y %H:%M")
 
-# 🔎 Filtra somente os dados da categoria CVLI
-df_cvli_geral = df[(df["CATEGORIA"] == "CVLI") & (df["CIDADE FATO"].isin(cidades))]
-
-# 🕒 Calcula última morte por cidade e dias sem morte
-ultimas_mortes = df_cvli_geral.groupby("CIDADE FATO")["DATA FATO"].max().reset_index()
-ultimas_mortes["Dias_Sem_Mortes"] = (hoje - ultimas_mortes["DATA FATO"]).dt.days
-
-# 📊 Conta total de ocorrências CVLI por cidade
-quantitativo = df_cvli_geral.groupby("CIDADE FATO").size().reset_index(name="Total_Ocorrencias")
-
-# 🔗 Junta tudo em uma tabela só
-dias_sem_morte = pd.merge(quantitativo, ultimas_mortes, on="CIDADE FATO").rename(columns={"DATA FATO": "Ultima_Morte"})
-
-# 🔁 Aplica formatação para data brasileira
-dias_sem_morte["Ultima_Morte"] = dias_sem_morte["Ultima_Morte"].dt.strftime("%d/%m/%Y %H:%M")
-
-# 🖼️ Exibe a tabela formatada
 st.markdown("### ⏳ Dias sem Mortes por Cidade")
 st.markdown(
-    dias_sem_morte
+    ultimas_mortes
     .style.format({"Dias_Sem_Mortes": "{:.0f}"})
     .set_properties(**{'text-align': 'center'})
     .hide(axis='index')
     .to_html(),
     unsafe_allow_html=True
 )
+
 # 📌 Tabela 2:Tabela Total — mostrando todas as cidades mesmo com 0
 tabela_total = (
     df_filtrado
