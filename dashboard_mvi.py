@@ -134,6 +134,8 @@ df_cvli_geral = df[(df["CATEGORIA"] == "CVLI") & (df["CIDADE FATO"].isin(cidades
 ultimas_mortes = df_cvli_geral.groupby("CIDADE FATO")["DATA FATO"].max().reset_index()
 ultimas_mortes["Dias_Sem_Mortes"] = (hoje - ultimas_mortes["DATA FATO"]).dt.days
 
+# 📊 Conta total de ocorrências CVLI por cidade
+quantitativo = df_cvli_geral.groupby("CIDADE FATO").size().reset_index(name="Total_Ocorrencias")
 
 # 🔗 Junta tudo em uma tabela só
 dias_sem_morte = pd.merge(quantitativo, ultimas_mortes, on="CIDADE FATO").rename(columns={"DATA FATO": "Ultima_Morte"})
