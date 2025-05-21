@@ -125,23 +125,32 @@ if meses:
 # pip install openpyxl
 
 # 📆 Tabela 1 Dias sem Mortes — filtrando apenas CVLI e as cidades selecionadas
-# 📆 Dias sem Mortes por Cidade — apenas CVLI, mostra todas as cidades mesmo sem dados
-hoje = pd.to_datetime(datetime.now().date())
-df_cvli = df[(df["CATEGORIA"] == "CVLI") & (df["CIDADE FATO"].isin(cidades))]
-ultimas_mortes = df_cvli.groupby("CIDADE FATO")["DATA FATO"].max().reindex(cidades)
-ultimas_mortes = ultimas_mortes.reset_index().rename(columns={"DATA FATO": "Ultima_Morte"})
-ultimas_mortes["Dias_Sem_Mortes"] = (hoje - ultimas_mortes["Ultima_Morte"]).dt.days
-ultimas_mortes["Ultima_Morte"] = ultimas_mortes["Ultima_Morte"].dt.strftime("%d/%m/%Y %H:%M")
+df_cvli_geral = df[(df["CATEGORIA"] == "CVLI") & (df["CIDADE FATO"].isin(cidades))]
 
+# Última data de morte por cidade (pode estar ausente)
+ultimas_mortes = df_cvli_geral.groupby("CIDADE FATO")["DATA FATO"].max()
+
+# Preenche com None para cidades sem mortes registradas
+ultimas_mortes = ultimas_mortes.reindex(cidades)
+
+# Cria DataFrame com os cálculos
+dias_sem_morte = ultimas_mortes.reset_index().rename(columns={"DATA FATO": "Ultima_Morte"})
+dias_sem_morte["Dias_Sem_Mortes"] = (pd.to_datetime(datetime.now().date()) - dias_sem_morte["Ultima_Morte"]).dt.days
+
+# Formata datas e lida com cidades sem mortes (NaT)
+dias_sem_morte["Ultima_Morte"] = dias_sem_morte["Ultima_Morte"].dt.strftime("%d/%m/%Y %H:%M").fillna("Sem registro")
+dias_sem_morte["Dias_Sem_Mortes"] = dias_sem_morte["Dias_Sem_Mortes"].fillna("Sem registro")
+
+# 🖼️ Exibe a tabela formatada
 st.markdown("### ⏳ Dias sem Mortes por Cidade")
 st.markdown(
-    ultimas_mortes
-    .style.format({"Dias_Sem_Mortes": "{:.0f}"})
-    .set_properties(**{'text-align': 'center'})
+    dias_sem_morte
+    .style.set_properties(**{'text-align': 'center'})
     .hide(axis='index')
     .to_html(),
     unsafe_allow_html=True
 )
+
 
 # 📌 Tabela 2:Tabela Total — mostrando todas as cidades mesmo com 0
 tabela_total = (
