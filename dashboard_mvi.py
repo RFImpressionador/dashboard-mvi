@@ -114,6 +114,14 @@ anos = st.multiselect("Selecionar Anos", options=sorted(df["Ano"].dropna().uniqu
 nomes_meses_ptbr = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
 meses = st.multiselect("Selecionar Mês (opcional)", options=sorted(df["Mes"].dropna().unique().tolist()), format_func=lambda x: nomes_meses_ptbr[x - 1], default=[])
 
+df["Dia_Semana"] = df["DATA FATO"].dt.day_name()
+
+dias_semana_disponiveis = df["Dia_Semana"].dropna().unique().tolist()
+dias_semana = st.multiselect("Filtrar por Dia da Semana (opcional)", options=sorted(dias_semana_disponiveis), default=[])
+
+if dias_semana:
+    df_filtrado = df_filtrado[df_filtrado["Dia_Semana"].isin(dias_semana)]
+
 # 🔎 Aplicando filtros
 df_filtrado = df[df["CIDADE FATO"].isin(cidades) & df["Ano"].isin(anos) & df["CATEGORIA"].isin(categorias)]
 if meses:
@@ -135,7 +143,8 @@ ultimas_mortes = ultimas_mortes.reindex(cidades)
 
 # Cria DataFrame com os cálculos
 dias_sem_morte = ultimas_mortes.reset_index().rename(columns={"DATA FATO": "Ultima_Morte"})
-dias_sem_morte["Dias_Sem_Mortes"] = (pd.to_datetime(datetime.now().date()) - dias_sem_morte["Ultima_Morte"]).dt.days
+dias_sem_morte["Dias_Sem_Mortes"] = dias_sem_morte["Dias_Sem_Mortes"].fillna("Sem registro")
+dias_sem_morte = dias_sem_morte.sort_values("CIDADE FATO")  # 🔠 Ordena por cidade
 
 # Formata datas e lida com cidades sem mortes (NaT)
 dias_sem_morte["Ultima_Morte"] = dias_sem_morte["Ultima_Morte"].dt.strftime("%d/%m/%Y %H:%M").fillna("Sem registro")
@@ -163,6 +172,8 @@ tabela_total = (
     .reset_index(name="Total")
 )
 
+tabela_total = tabela_total.sort_values("CIDADE FATO")  # 🔠 Ordena por cidade
+
 st.markdown("### 🔢 Total por Cidade e Categoria")
 st.markdown(
     tabela_total
@@ -185,6 +196,8 @@ for i in range(1, len(anos_disp)):
     cvli_por_ano[col_var] = cvli_por_ano[col_var].round(0).astype(int)
 
 cvli_pivot = cvli_por_ano.reset_index()
+cvli_pivot = cvli_pivot.sort_values("CIDADE FATO")  # 🔠 Ordena por cidade
+
 
 st.markdown("### 📈 Comparativo CVLI Ano a Ano")
 col_anos = [col for col in cvli_pivot.columns if isinstance(col, int)]
@@ -229,6 +242,8 @@ if len(anos) > 1:
 
     # Exibir tabela
     cvli_mes_pivot = cvli_mes_pivot.reset_index()
+cvli_mes_pivot = cvli_mes_pivot.sort_values("CIDADE FATO")  # 🔠 Ordena por cidade
+
 
     st.markdown("### 📊 Comparativo CVLI Mês a Mês")
     col_anos_mes = [col for col in cvli_mes_pivot.columns if isinstance(col, int)]
