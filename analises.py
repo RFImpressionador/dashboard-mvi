@@ -10,12 +10,11 @@ def mostrar_dias_sem_morte(df_filtrado, cidades):
     ultimas_mortes = df_cvli_geral.groupby("CIDADE FATO")["DATA FATO"].max().reindex(cidades)
 
     dias_sem_morte = ultimas_mortes.reset_index().rename(columns={"DATA FATO": "Ultima_Morte"})
-    dias_sem_morte["Dias_Sem_Mortes"] = (pd.to_datetime(datetime.now().date()) - dias_sem_morte["Ultima_Morte"]).dt.days
+    dias_sem_morte["Dias_Sem_Mortes"] = (
+    pd.to_datetime(datetime.now().date()) - dias_sem_morte["Ultima_Morte"]
+).dt.days.astype("Int64")  # Formato que aceita NA
 
-    dias_sem_morte["Dias_Sem_Mortes"] = dias_sem_morte["Dias_Sem_Mortes"].fillna("Sem registro")
-    dias_sem_morte.loc[dias_sem_morte["Dias_Sem_Mortes"] != "Sem registro", "Dias_Sem_Mortes"] = dias_sem_morte.loc[dias_sem_morte["Dias_Sem_Mortes"] != "Sem registro", "Dias_Sem_Mortes"].astype(int)
-
-    dias_sem_morte["Ultima_Morte"] = dias_sem_morte["Ultima_Morte"].dt.strftime("%d/%m/%Y %H:%M").fillna("Sem registro")
+    #dias_sem_morte["Ultima_Morte"] = dias_sem_morte["Ultima_Morte"].dt.strftime("%d/%m/%Y %H:%M").fillna("Sem registro")
     dias_sem_morte["Dias_Sem_Mortes"] = dias_sem_morte["Dias_Sem_Mortes"].fillna("Sem registro")
 
     st.markdown("### ⏳ Dias sem Mortes por Cidade")
