@@ -134,6 +134,7 @@ def mostrar_comparativo_mes(df_filtrado, cidades, anos, meses):
     )
 
     st.markdown("### 📅 Datas e Dias da Semana por Cidade")
+    df_cvli["DATA FATO"] = df_cvli["DATA FATO"].dt.strftime("%d/%m/%Y %H:%M")
     tabela_detalhes = df_cvli[["CIDADE FATO", "DATA FATO", "Dia_Semana", "Tipo_Dia"]]
     tabela_detalhes = tabela_detalhes[df_cvli["Ano"].isin(anos) & df_cvli["Mes"].isin(meses_filtrados)]
     tabela_detalhes = tabela_detalhes.sort_values(by=["CIDADE FATO", "DATA FATO"])
