@@ -30,26 +30,23 @@ if df.empty:
 
 # ✅ Menu lateral (logo, filtros e navegação)
 with st.sidebar:
+    st.image("logo_p2_10bpm.png", width=80)
     st.markdown("""
-        <div style='text-align: center;'>
-            <img src='logo_p2_10bpm.png' style='width: 100px; border-radius: 50%; margin-bottom: 10px;'>
-        </div>
         <hr style='border-top: 1px solid #aaa;'>
         <h4 style='color:#dc3545;'>🔎 Filtros</h4>
     """, unsafe_allow_html=True)
 
-    # filtros
     cidades, categorias, anos, meses = aplicar_filtros_sidebar(df)
 
     st.markdown("""
         <hr style='border-top: 1px solid #aaa;'>
-        <h4 style='color:#dc3545;'>🧭 Navegação</h4>
-        <ul style='list-style: none; padding-left: 0; line-height: 1.6;'>
+        <h4 style='color:#dc3545;'>🧽 Navegação</h4>
+        <ul style='list-style: none; padding-left: 0;'>
             <li>⏳ <a href="#dias-sem-mortes-por-cidade" style="text-decoration: none; color: white;">Dias sem Mortes</a></li>
             <li>🔢 <a href="#total-por-cidade-e-categoria" style="text-decoration: none; color: white;">Total por Cidade</a></li>
             <li>📈 <a href="#comparativo-cvli-ano-a-ano" style="text-decoration: none; color: white;">Comparativo Ano</a></li>
             <li>📊 <a href="#comparativo-cvli-mes-a-mes" style="text-decoration: none; color: white;">Comparativo Mês</a></li>
-            <li>📅 <a href="#datas-e-dias-da-semana-por-cidade" style="text-decoration: none; color: white;">Datas Detalhadas</a></li>
+            <li>🗕️ <a href="#datas-e-dias-da-semana-por-cidade" style="text-decoration: none; color: white;">Datas Detalhadas</a></li>
         </ul>
         <hr style='border-top: 1px solid #aaa;'>
         <small style='color:gray;'>Criado por Analista de Campo — Codinome: <strong>Falcão</strong></small>
