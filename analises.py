@@ -4,11 +4,11 @@ from datetime import datetime
 from feriados import carregar_feriados_personalizados
 import holidays
 
-def mostrar_dias_sem_morte(df, cidades):
-    df_cvli = df[df["CATEGORIA"] == "CVLI"]
-    df_cvli_geral = df_cvli[df_cvli["CIDADE FATO"].isin(cidades)]
+def mostrar_dias_sem_morte(df, cidades, categorias):
+    df_categoria = df[df["CATEGORIA"].isin(categorias)]
+    df_filtrado = df_categoria[df_categoria["CIDADE FATO"].isin(cidades)]
 
-    ultimas_mortes = df_cvli_geral.groupby("CIDADE FATO")["DATA FATO"].max().reindex(cidades)
+    ultimas_mortes = df_filtrado.groupby("CIDADE FATO")["DATA FATO"].max().reindex(cidades)
 
     dias_sem_morte = ultimas_mortes.reset_index().rename(columns={"DATA FATO": "Ultima_Morte"})
     dias_sem_morte["Dias_Sem_Mortes"] = (
