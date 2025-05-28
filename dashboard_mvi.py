@@ -1,3 +1,12 @@
+# 📁 Estrutura modular proposta
+# ├── app.py                <- Arquivo principal (interface)
+# ├── filtros.py            <- Filtros e lógica de seleção
+# ├── dados.py              <- Funções de carregamento e transformação de dados
+# ├── autenticacao.py       <- Controle de acesso
+# ├── estilo.py             <- CSS customizado
+# ├── exportacao.py         <- Exportação de dados para Excel
+# └── analises.py           <- Exibição de tabelas e comparativos
+
 # ===========================================
 # dashboard_mvi.py (Arquivo principal)
 # ===========================================
@@ -30,8 +39,10 @@ if df.empty:
 
 # ✅ Menu lateral (logo, filtros e navegação)
 with st.sidebar:
-    st.image("logo_p2_10bpm.png", width=80)
     st.markdown("""
+        <div style='text-align: center;'>
+            <img src='logo_p2_10bpm.png' width='80' style='border-radius: 50%; display: block; margin-left: auto; margin-right: auto;'>
+        </div>
         <hr style='border-top: 1px solid #aaa;'>
         <h4 style='color:#dc3545;'>🔎 Filtros</h4>
     """, unsafe_allow_html=True)
@@ -40,13 +51,13 @@ with st.sidebar:
 
     st.markdown("""
         <hr style='border-top: 1px solid #aaa;'>
-        <h4 style='color:#dc3545;'>🧽 Navegação</h4>
+        <h4 style='color:#dc3545;'>🧭 Navegação</h4>
         <ul style='list-style: none; padding-left: 0;'>
             <li>⏳ <a href="#dias-sem-mortes-por-cidade" style="text-decoration: none; color: white;">Dias sem Mortes</a></li>
             <li>🔢 <a href="#total-por-cidade-e-categoria" style="text-decoration: none; color: white;">Total por Cidade</a></li>
             <li>📈 <a href="#comparativo-cvli-ano-a-ano" style="text-decoration: none; color: white;">Comparativo Ano</a></li>
             <li>📊 <a href="#comparativo-cvli-mes-a-mes" style="text-decoration: none; color: white;">Comparativo Mês</a></li>
-            <li>🗕️ <a href="#datas-e-dias-da-semana-por-cidade" style="text-decoration: none; color: white;">Datas Detalhadas</a></li>
+            <li>📅 <a href="#datas-e-dias-da-semana-por-cidade" style="text-decoration: none; color: white;">Datas Detalhadas</a></li>
         </ul>
         <hr style='border-top: 1px solid #aaa;'>
         <small style='color:gray;'>Criado por Analista de Campo — Codinome: <strong>Falcão</strong></small>
@@ -61,8 +72,11 @@ if meses:
 st.markdown("<div style='margin-top: -40px'></div>", unsafe_allow_html=True)
 mostrar_dias_sem_morte(df, cidades)
 mostrar_total_por_cidade(df_filtrado, cidades)
-mostrar_comparativo_ano(df_filtrado, cidades)
-mostrar_comparativo_mes(df_filtrado, cidades, anos, meses)
 
-# 📅 Botão exportar
+if len(anos) > 1:
+    mostrar_comparativo_ano(df_filtrado, cidades)
+else:
+    mostrar_comparativo_mes(df_filtrado, cidades, anos, meses)
+
+# 📥 Botão exportar
 st.download_button("📅 Baixar Tabelas em Excel", data=to_excel({"Dados Filtrados": df_filtrado}), file_name="dados_filtrados.xlsx")
