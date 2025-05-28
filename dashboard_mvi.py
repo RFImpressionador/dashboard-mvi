@@ -39,6 +39,7 @@ if df.empty:
 
 # ✅ Menu lateral (logo, filtros e navegação)
 with st.sidebar:
+ st.image("logo_p2_10bpm.png", width=80)
     st.markdown("""
         <div style='text-align: center;'>
             <img src='logo_p2_10bpm.png' width='80' style='border-radius: 50%;'>
