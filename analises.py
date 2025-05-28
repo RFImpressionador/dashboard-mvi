@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 
-
 def mostrar_dias_sem_morte(df_filtrado, cidades):
     df_cvli = df_filtrado[df_filtrado["CATEGORIA"] == "CVLI"]
     df_cvli_geral = df_cvli[df_cvli["CIDADE FATO"].isin(cidades)]
@@ -11,11 +10,12 @@ def mostrar_dias_sem_morte(df_filtrado, cidades):
 
     dias_sem_morte = ultimas_mortes.reset_index().rename(columns={"DATA FATO": "Ultima_Morte"})
     dias_sem_morte["Dias_Sem_Mortes"] = (
-    pd.to_datetime(datetime.now().date()) - dias_sem_morte["Ultima_Morte"]
-).dt.days.astype("Int64")  # Formato que aceita NA
+        pd.to_datetime(datetime.now().date()) - dias_sem_morte["Ultima_Morte"]
+    ).dt.days
 
-    #dias_sem_morte["Ultima_Morte"] = dias_sem_morte["Ultima_Morte"].dt.strftime("%d/%m/%Y %H:%M").fillna("Sem registro")
+    dias_sem_morte["Ultima_Morte"] = dias_sem_morte["Ultima_Morte"].dt.strftime("%d/%m/%Y %H:%M")
     dias_sem_morte["Dias_Sem_Mortes"] = dias_sem_morte["Dias_Sem_Mortes"].fillna("Sem registro")
+    dias_sem_morte.loc[dias_sem_morte["Dias_Sem_Mortes"] != "Sem registro", "Dias_Sem_Mortes"] = dias_sem_morte.loc[dias_sem_morte["Dias_Sem_Mortes"] != "Sem registro", "Dias_Sem_Mortes"].astype(int)
 
     st.markdown("### ⏳ Dias sem Mortes por Cidade")
     st.markdown(
@@ -25,7 +25,6 @@ def mostrar_dias_sem_morte(df_filtrado, cidades):
         .to_html(),
         unsafe_allow_html=True
     )
-
 
 def mostrar_total_por_cidade(df_filtrado, cidades):
     tabela_total = (
@@ -46,7 +45,6 @@ def mostrar_total_por_cidade(df_filtrado, cidades):
         .to_html(),
         unsafe_allow_html=True
     )
-
 
 def mostrar_comparativo_ano(df_filtrado, cidades):
     df_cvli = df_filtrado[df_filtrado["CATEGORIA"] == "CVLI"]
@@ -73,7 +71,6 @@ def mostrar_comparativo_ano(df_filtrado, cidades):
         .to_html(),
         unsafe_allow_html=True
     )
-
 
 def mostrar_comparativo_mes(df_filtrado, cidades, anos, meses):
     if len(anos) <= 1:
