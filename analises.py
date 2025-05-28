@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
+from feriados import carregar_feriados_personalizados
+
 
 def mostrar_dias_sem_morte(df, cidades):
     df_cvli = df[df["CATEGORIA"] == "CVLI"]
