@@ -1,43 +1,40 @@
 import streamlit as st
 
 def aplicar_filtros_sidebar(df):
-    st.sidebar.header("🔎 Filtros")
-
     cidades_10bpm = [
         "Palmeira dos Índios", "Igaci", "Estrela de Alagoas", "Minador do Negrão",
         "Cacimbinhas", "Quebrangulo", "Paulo Jacinto", "Mar Vermelho",
         "Belém", "Tanque d Arca", "Maribondo"
     ]
 
-    usar_10bpm = st.sidebar.checkbox("Usar cidades do 10º BPM", value=True)
-    if usar_10bpm:
-        cidades = [c for c in cidades_10bpm if c in df["CIDADE FATO"].unique()]
-    else:
-        cidades = st.sidebar.multiselect("Selecionar Cidades", sorted(df["CIDADE FATO"].dropna().unique()))
+    with st.sidebar:
+        st.image("logo_p2_10bpm.png", width=150)
+        st.markdown("---")
+        st.markdown("### 🧭 Navegação")
+        st.markdown("[⏳ Dias sem Mortes](#dias_sem_mortes)", unsafe_allow_html=True)
+        st.markdown("[🔢 Total por Cidade](#total_cidade)", unsafe_allow_html=True)
+        st.markdown("[📈 Comparativo Ano](#comparativo_ano)", unsafe_allow_html=True)
+        st.markdown("[📊 Comparativo Mês](#comparativo_mes)", unsafe_allow_html=True)
+        st.markdown("[📅 Datas Detalhadas](#datas_detalhes)", unsafe_allow_html=True)
+        st.markdown("---")
 
-    categorias = st.sidebar.multiselect(
-        "Selecionar Categorias",
-        sorted(df["CATEGORIA"].dropna().unique()),
-        default=sorted(df["CATEGORIA"].dropna().unique())
-    )
+        st.markdown("### 🔍 Filtros")
+        usar_cidades_10bpm = st.checkbox("Usar cidades do 10º BPM", value=True)
 
-    anos_disponiveis = df[df["CIDADE FATO"].isin(cidades)]["Ano"].dropna().unique()
-    anos = st.sidebar.multiselect(
-        "Selecionar Anos",
-        sorted(anos_disponiveis),
-        default=sorted(anos_disponiveis)
-    )
+        cidades = sorted(df["CIDADE FATO"].dropna().unique())
+        cidades_selecionadas = cidades_10bpm if usar_cidades_10bpm else cidades
+        cidades = st.multiselect("Selecionar Cidades", cidades, default=[c for c in cidades_10bpm if c in cidades])
 
-    nomes_meses_ptbr = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
-    meses = st.sidebar.multiselect(
-        "Selecionar Mês (opcional)",
-        options=sorted(df["Mes"].dropna().unique().tolist()),
-        format_func=lambda x: nomes_meses_ptbr[x - 1],
-        default=[]
-    )
+        categorias = st.multiselect("Selecionar Categorias", sorted(df["CATEGORIA"].dropna().unique()), default=sorted(df["CATEGORIA"].dropna().unique()))
+        anos = st.multiselect("Selecionar Anos", options=sorted(df["Ano"].dropna().unique().tolist()), default=sorted(df["Ano"].dropna().unique().tolist()))
 
-    if st.sidebar.button("🧹 Limpar Filtros"):
-        st.session_state.clear()
-        st.rerun()
+        nomes_meses_ptbr = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
+        meses = st.multiselect("Selecionar Mês (opcional)", options=sorted(df["Mes"].dropna().unique().tolist()), format_func=lambda x: nomes_meses_ptbr[x - 1], default=[])
+
+        if st.button("🧹 Limpar Filtros"):
+            st.experimental_rerun()
+
+        st.markdown("---")
+        st.markdown("<p style='font-size:10px; text-align:center;'>Criado por Analista de Campo - codinome <b>Falcão</b></p>", unsafe_allow_html=True)
 
     return cidades, categorias, anos, meses
