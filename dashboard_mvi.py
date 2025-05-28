@@ -59,7 +59,7 @@ if meses:
 
 # 📊 Exibição das Tabelas
 st.markdown("<div style='margin-top: -40px'></div>", unsafe_allow_html=True)
-mostrar_dias_sem_morte(df, cidades)
+mostrar_dias_sem_morte(df, cidades, categorias)
 mostrar_total_por_cidade(df_filtrado, cidades)
 
 # Exibe Comparativo Ano a Ano apenas se mais de um ano ou nenhum mês for selecionado
@@ -70,4 +70,6 @@ if len(anos) > 1 or not meses:
 mostrar_comparativo_mes(df_filtrado, cidades, anos, meses)
 
 # 📅 Botão exportar
+st.download_button("📅 Baixar Tabelas em Excel", data=to_excel({"Dados Filtrados": df_filtrado}), file_name="dados_filtrados.xlsx")
+
 st.download_button("📅 Baixar Tabelas em Excel", data=to_excel({"Dados Filtrados": df_filtrado}), file_name="dados_filtrados.xlsx")
