@@ -45,3 +45,51 @@ button[kind="primary"] {
     color: #dc3545;
     margin-top: 1.5rem;
 }
+
+/* Centralizar logo na barra lateral */
+img[src*="logo_p2_10bpm.png"] {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border: 2px solid #ddd;
+}
+
+/* Estilizar links de navegação na barra lateral */
+.nav-links a {
+    text-decoration: none;
+    color: #ffffff;
+    background-color: #444;
+    padding: 8px 12px;
+    display: block;
+    border-radius: 6px;
+    margin-bottom: 5px;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.nav-links a:hover {
+    background-color: #666;
+    color: #ffcc00;
+    padding-left: 16px;
+}
+
+/* Estilo para os créditos no rodapé */
+.sidebar-bottom {
+    font-size: 10px;
+    color: #aaa;
+    text-align: center;
+    padding-top: 20px;
+    margin-top: 10px;
+    border-top: 1px solid #333;
+}
+
+/* Ajustes gerais */
+hr {
+    border-color: #555;
+}
