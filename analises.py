@@ -5,7 +5,12 @@ from feriados import carregar_feriados_personalizados
 import holidays
 
 def mostrar_dias_sem_morte(df, cidades, categorias):
-    df_categoria = df[df["CATEGORIA"].isin(categorias)]
+    df_categoria = df[df["CATEGORIA"].isin(categorias)].copy()
+
+    # Certifica que datas são datetime válidas
+    df_categoria = df_categoria[df_categoria["DATA FATO"].notna()]
+    df_categoria["DATA FATO"] = pd.to_datetime(df_categoria["DATA FATO"], errors="coerce")
+
     df_filtrado = df_categoria[df_categoria["CIDADE FATO"].isin(cidades)]
 
     ultimas_mortes = df_filtrado.groupby("CIDADE FATO")["DATA FATO"].max().reindex(cidades)
