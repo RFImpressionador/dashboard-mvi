@@ -20,7 +20,8 @@ from analises import (
     mostrar_dias_sem_morte,
     mostrar_total_por_cidade,
     mostrar_comparativo_ano,
-    mostrar_comparativo_mes
+    mostrar_comparativo_mes,
+    mostrar_tabela_detalhes
 )
 import pandas as pd
 from datetime import datetime
@@ -41,12 +42,11 @@ if df.empty:
 with st.sidebar:
     st.markdown("""
         <div style='text-align: center;'>
-            <img src='logo_p2_10bpm.png' width='80' style='border-radius: 50%; display: block; margin-left: auto; margin-right: auto;'>
+            <img src='logo_p2_10bpm.png' width='80' style='border-radius: 50%;'>
         </div>
         <hr style='border-top: 1px solid #aaa;'>
         <h4 style='color:#dc3545;'>🔎 Filtros</h4>
     """, unsafe_allow_html=True)
-
     cidades, categorias, anos, meses = aplicar_filtros_sidebar(df)
 
     st.markdown("""
@@ -73,10 +73,12 @@ st.markdown("<div style='margin-top: -40px'></div>", unsafe_allow_html=True)
 mostrar_dias_sem_morte(df, cidades)
 mostrar_total_por_cidade(df_filtrado, cidades)
 
-if len(anos) > 1:
+# 📊 Exibição Condicional de Comparativos
+if len(anos) >= 2:
     mostrar_comparativo_ano(df_filtrado, cidades)
-else:
+elif len(anos) == 1:
     mostrar_comparativo_mes(df_filtrado, cidades, anos, meses)
+    mostrar_tabela_detalhes(df_filtrado, anos, meses)
 
 # 📥 Botão exportar
 st.download_button("📅 Baixar Tabelas em Excel", data=to_excel({"Dados Filtrados": df_filtrado}), file_name="dados_filtrados.xlsx")
