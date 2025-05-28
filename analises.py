@@ -72,7 +72,43 @@ def mostrar_comparativo_ano(df_filtrado, cidades):
         .hide(axis='index')
         .to_html(),
         unsafe_allow_html=True
+    )def mostrar_comparativo_mes(df_filtrado, cidades, anos, meses):
+    meses_filtrados = sorted(meses) if meses else list(range(1, 13))
+    todas_combinacoes = pd.MultiIndex.from_product(
+        [cidades, anos, meses_filtrados],
+        names=["CIDADE FATO", "Ano", "Mes"]
     )
+
+    df_cvli = df_filtrado[df_filtrado["CATEGORIA"] == "CVLI"]
+    cvli_mes = df_cvli.groupby(["CIDADE FATO", "Ano", "Mes"]).size().reset_index(name="Total")
+
+    cvli_mes = cvli_mes.set_index(["CIDADE FATO", "Ano", "Mes"]).reindex(todas_combinacoes, fill_value=0).reset_index()
+    cvli_mes_pivot = cvli_mes.pivot(index=["CIDADE FATO", "Mes"], columns="Ano", values="Total").fillna(0).astype(int)
+
+    col_anos_mes = [col for col in cvli_mes_pivot.columns if isinstance(col, int)]
+
+    # Calcular variações apenas se houver mais de 1 ano E mais de 1 mês selecionado
+    incluir_variacoes = len(anos) > 1 and len(meses_filtrados) > 1
+    if incluir_variacoes:
+        for i in range(1, len(col_anos_mes)):
+            ant, atual = col_anos_mes[i - 1], col_anos_mes[i]
+            col_var = f"% Variação {ant}-{atual}"
+            cvli_mes_pivot[col_var] = ((cvli_mes_pivot[atual] - cvli_mes_pivot[ant]) / cvli_mes_pivot[ant].replace(0, 1)) * 100
+            cvli_mes_pivot[col_var] = cvli_mes_pivot[col_var].round(0).astype(int)
+
+    cvli_mes_pivot = cvli_mes_pivot.reset_index()
+    col_var_mes = [col for col in cvli_mes_pivot.columns if "Variação" in col]
+
+    st.markdown("### 📊 Comparativo CVLI Mês a Mês")
+    st.markdown(
+        cvli_mes_pivot
+        .style.format({**{col: "{:.0f}" for col in col_anos_mes + col_var_mes}})
+        .set_properties(**{'text-align': 'center'})
+        .hide(axis='index')
+        .to_html(),
+        unsafe_allow_html=True
+    )
+
 
 def mostrar_comparativo_mes(df_filtrado, cidades, anos, meses):
     if len(anos) <= 1:
