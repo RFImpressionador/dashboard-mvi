@@ -32,7 +32,12 @@ aplicar_css_personalizado()
 if not autenticar():
     st.stop()
 
-# ✅ Menu lateral (com filtro e navegação)
+# 📊 Carregamento de dados
+df = carregar_dados()
+if df.empty:
+    st.stop()
+
+# ✅ Menu lateral (logo, filtros e navegação)
 with st.sidebar:
     st.markdown("""
         <div style='text-align: center;'>
@@ -41,14 +46,21 @@ with st.sidebar:
         <hr style='border-top: 1px solid #aaa;'>
         <h4 style='color:#dc3545;'>🔎 Filtros</h4>
     """, unsafe_allow_html=True)
+    cidades, categorias, anos, meses = aplicar_filtros_sidebar(df)
 
-# 📊 Carregamento de dados
-df = carregar_dados()
-if df.empty:
-    st.stop()
-
-# 📊 Filtros
-cidades, categorias, anos, meses = aplicar_filtros_sidebar(df)
+    st.markdown("""
+        <hr style='border-top: 1px solid #aaa;'>
+        <h4 style='color:#dc3545;'>🧭 Navegação</h4>
+        <ul style='list-style: none; padding-left: 0;'>
+            <li>⏳ <a href="#dias-sem-mortes-por-cidade" style="text-decoration: none; color: white;">Dias sem Mortes</a></li>
+            <li>🔢 <a href="#total-por-cidade-e-categoria" style="text-decoration: none; color: white;">Total por Cidade</a></li>
+            <li>📈 <a href="#comparativo-cvli-ano-a-ano" style="text-decoration: none; color: white;">Comparativo Ano</a></li>
+            <li>📊 <a href="#comparativo-cvli-mes-a-mes" style="text-decoration: none; color: white;">Comparativo Mês</a></li>
+            <li>📅 <a href="#datas-e-dias-da-semana-por-cidade" style="text-decoration: none; color: white;">Datas Detalhadas</a></li>
+        </ul>
+        <hr style='border-top: 1px solid #aaa;'>
+        <small style='color:gray;'>Criado por Analista de Campo — Codinome: <strong>Falcão</strong></small>
+    """, unsafe_allow_html=True)
 
 # 🔎 Aplicando filtros
 df_filtrado = df[df["CIDADE FATO"].isin(cidades) & df["Ano"].isin(anos) & df["CATEGORIA"].isin(categorias)]
@@ -64,10 +76,3 @@ mostrar_comparativo_mes(df_filtrado, cidades, anos, meses)
 
 # 📥 Botão exportar
 st.download_button("📅 Baixar Tabelas em Excel", data=to_excel({"Dados Filtrados": df_filtrado}), file_name="dados_filtrados.xlsx")
-
-# 📌 Créditos
-with st.sidebar:
-    st.markdown("""
-        <hr style='border-top: 1px solid #aaa;'>
-        <small style='color:gray;'>Criado por Analista de Campo — Codinome: <strong>Falcão</strong></small>
-    """, unsafe_allow_html=True)
