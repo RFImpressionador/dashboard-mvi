@@ -8,15 +8,8 @@ def aplicar_filtros_sidebar(df):
     ]
 
     with st.sidebar:
-        st.image("logo_p2_10bpm.png", width=150)
-        st.markdown("---")
-        st.markdown("### 🧭 Navegação")
-        st.markdown("[⏳ Dias sem Mortes](#dias_sem_mortes)", unsafe_allow_html=True)
-        st.markdown("[🔢 Total por Cidade](#total_cidade)", unsafe_allow_html=True)
-        st.markdown("[📈 Comparativo Ano](#comparativo_ano)", unsafe_allow_html=True)
-        st.markdown("[📊 Comparativo Mês](#comparativo_mes)", unsafe_allow_html=True)
-        st.markdown("[📅 Datas Detalhadas](#datas_detalhes)", unsafe_allow_html=True)
-        st.markdown("---")
+        st.image("logo_p2_10bpm.png", width=120)
+        st.markdown("<hr>", unsafe_allow_html=True)
 
         st.markdown("### 🔍 Filtros")
         usar_cidades_10bpm = st.checkbox("Usar cidades do 10º BPM", value=True)
@@ -35,6 +28,18 @@ def aplicar_filtros_sidebar(df):
             st.experimental_rerun()
 
         st.markdown("---")
+        st.markdown("### 🧭 Acesso Rápido")
+        st.markdown("""
+        <div class="nav-links">
+            <a href="#dias_sem_mortes">⏳ Dias sem Mortes</a><br>
+            <a href="#total_cidade">🔢 Total por Cidade</a><br>
+            <a href="#comparativo_ano">📈 Comparativo Ano</a><br>
+            <a href="#comparativo_mes">📊 Comparativo Mês</a><br>
+            <a href="#datas_detalhes">📅 Datas Detalhadas</a>
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("<hr>", unsafe_allow_html=True)
         st.markdown("<p style='font-size:10px; text-align:center;'>Criado por Analista de Campo - codinome <b>Falcão</b></p>", unsafe_allow_html=True)
 
     return cidades, categorias, anos, meses
