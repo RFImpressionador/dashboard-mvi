@@ -244,7 +244,6 @@ if len(anos) > 1:
     cvli_mes_pivot = cvli_mes_pivot.reset_index()
 cvli_mes_pivot = cvli_mes_pivot.sort_values("CIDADE FATO")  # 🔠 Ordena por cidade
 
-
     st.markdown("### 📊 Comparativo CVLI Mês a Mês")
     col_anos_mes = [col for col in cvli_mes_pivot.columns if isinstance(col, int)]
     col_var_mes = [col for col in cvli_mes_pivot.columns if isinstance(col, str) and "Variação" in col]
