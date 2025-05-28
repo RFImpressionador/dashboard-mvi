@@ -5,8 +5,7 @@
 # ├── autenticacao.py       <- Controle de acesso
 # ├── estilo.py             <- CSS customizado
 # ├── exportacao.py         <- Exportação de dados para Excel
-# ├── analises.py           <- Exibição de tabelas e comparativos
-# └── layout.py             <- Logo, navegação e créditos da barra lateral
+# └── analises.py           <- Exibição de tabelas e comparativos
 
 # ===========================================
 # dashboard_mvi.py (Arquivo principal)
@@ -17,7 +16,6 @@ from filtros import aplicar_filtros_sidebar
 from autenticacao import autenticar
 from estilo import aplicar_css_personalizado
 from exportacao import to_excel
-from layout import montar_sidebar
 from analises import (
     mostrar_dias_sem_morte,
     mostrar_total_por_cidade,
@@ -31,12 +29,12 @@ from datetime import datetime
 st.set_page_config(page_title="Análise MVI 10º BPM", layout="wide")
 aplicar_css_personalizado()
 
-# ✅ Menu lateral (com logo, filtros e navegação)
-montar_sidebar()
-
 # 🔐 Autenticação
 if not autenticar():
     st.stop()
+
+# ✅ Menu lateral (com filtro e navegação)
+montar_sidebar()
 
 # 📊 Carregamento de dados
 df = carregar_dados()
