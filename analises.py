@@ -2,8 +2,8 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 
-def mostrar_dias_sem_morte(df_filtrado, cidades):
-    df_cvli = df_filtrado[df_filtrado["CATEGORIA"] == "CVLI"]
+def mostrar_dias_sem_morte(df, cidades):
+    df_cvli = df[df["CATEGORIA"] == "CVLI"]
     df_cvli_geral = df_cvli[df_cvli["CIDADE FATO"].isin(cidades)]
 
     ultimas_mortes = df_cvli_geral.groupby("CIDADE FATO")["DATA FATO"].max().reindex(cidades)
@@ -26,6 +26,7 @@ def mostrar_dias_sem_morte(df_filtrado, cidades):
         unsafe_allow_html=True
     )
 
+
 def mostrar_total_por_cidade(df_filtrado, cidades):
     tabela_total = (
         df_filtrado
@@ -45,6 +46,7 @@ def mostrar_total_por_cidade(df_filtrado, cidades):
         .to_html(),
         unsafe_allow_html=True
     )
+
 
 def mostrar_comparativo_ano(df_filtrado, cidades):
     df_cvli = df_filtrado[df_filtrado["CATEGORIA"] == "CVLI"]
@@ -71,6 +73,7 @@ def mostrar_comparativo_ano(df_filtrado, cidades):
         .to_html(),
         unsafe_allow_html=True
     )
+
 
 def mostrar_comparativo_mes(df_filtrado, cidades, anos, meses):
     if len(anos) <= 1:
