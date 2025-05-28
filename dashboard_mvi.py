@@ -32,6 +32,10 @@ if not autenticar():
     st.stop()
 
 df = carregar_dados()
+st.subheader("🔍 Verificação de Dados Carregados")
+st.write("Número total de registros:", len(df))
+st.dataframe(df.head())
+
 if df.empty:
     st.stop()
 
