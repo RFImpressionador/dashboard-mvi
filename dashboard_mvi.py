@@ -77,5 +77,3 @@ mostrar_comparativo_mes(df_filtrado, cidades, anos, meses)
 st.download_button("📅 Baixar Tabelas em Excel", data=to_excel({"Dados Filtrados": df_filtrado}), file_name="dados_filtrados.xlsx")
 
 st.markdown("<div id='datas_detalhadas'></div>", unsafe_allow_html=True)
-
-)
