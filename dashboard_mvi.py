@@ -61,7 +61,12 @@ if meses:
 st.markdown("<div style='margin-top: -40px'></div>", unsafe_allow_html=True)
 mostrar_dias_sem_morte(df, cidades)
 mostrar_total_por_cidade(df_filtrado, cidades)
-mostrar_comparativo_ano(df_filtrado, cidades)
+
+# Exibe Comparativo Ano a Ano apenas se mais de um ano ou nenhum mês for selecionado
+if len(anos) > 1 or not meses:
+    mostrar_comparativo_ano(df_filtrado, cidades)
+
+# Comparativo Mês a Mês (mostrado sempre que houver anos selecionados)
 mostrar_comparativo_mes(df_filtrado, cidades, anos, meses)
 
 # 📅 Botão exportar
