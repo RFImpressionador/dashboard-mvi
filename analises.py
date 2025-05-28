@@ -88,15 +88,13 @@ def mostrar_comparativo_mes(df_filtrado, cidades, anos, meses):
 
     df_cvli = df_filtrado[df_filtrado["CATEGORIA"] == "CVLI"].copy()
     dias_pt = {
-    "Monday": "Segunda-feira", "Tuesday": "Terça-feira", "Wednesday": "Quarta-feira",
-    "Thursday": "Quinta-feira", "Friday": "Sexta-feira", "Saturday": "Sábado", "Sunday": "Domingo"
-}
-df_cvli["Dia_Semana"] = df_cvli["DATA FATO"].dt.day_name().map(dias_pt)
-
+        "Monday": "Segunda-feira", "Tuesday": "Terça-feira", "Wednesday": "Quarta-feira",
+        "Thursday": "Quinta-feira", "Friday": "Sexta-feira", "Saturday": "Sábado", "Sunday": "Domingo"
+    }
+    df_cvli["Dia_Semana"] = df_cvli["DATA FATO"].dt.day_name().map(dias_pt)
     df_cvli["Data_Formatada"] = df_cvli["DATA FATO"].dt.strftime("%d/%m/%Y")
 
     cvli_mes = df_cvli.groupby(["CIDADE FATO", "Ano", "Mes"]).size().reset_index(name="Total")
-
     cvli_mes = cvli_mes.set_index(["CIDADE FATO", "Ano", "Mes"]).reindex(todas_combinacoes, fill_value=0).reset_index()
     cvli_mes_pivot = cvli_mes.pivot(index=["CIDADE FATO", "Mes"], columns="Ano", values="Total").fillna(0).astype(int)
 
@@ -119,10 +117,8 @@ df_cvli["Dia_Semana"] = df_cvli["DATA FATO"].dt.day_name().map(dias_pt)
         unsafe_allow_html=True
     )
 
-    # Mostra tabela auxiliar com datas e dias da semana
     st.markdown("### 📅 Datas e Dias da Semana por Cidade")
     tabela_detalhes = df_cvli[["CIDADE FATO", "DATA FATO", "Data_Formatada", "Dia_Semana"]]
     tabela_detalhes = tabela_detalhes[df_cvli["Ano"].isin(anos) & df_cvli["Mes"].isin(meses_filtrados)]
     tabela_detalhes = tabela_detalhes.sort_values(by=["CIDADE FATO", "DATA FATO"])
-
     st.dataframe(tabela_detalhes.reset_index(drop=True))
