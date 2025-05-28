@@ -86,7 +86,10 @@ def mostrar_comparativo_mes(df_filtrado, cidades, anos, meses):
         names=["CIDADE FATO", "Ano", "Mes"]
     )
 
-    df_cvli = df_filtrado[df_filtrado["CATEGORIA"] == "CVLI"]
+    df_cvli = df_filtrado[df_filtrado["CATEGORIA"] == "CVLI"].copy()
+    df_cvli["Dia_Semana"] = df_cvli["DATA FATO"].dt.day_name(locale='pt_BR')
+    df_cvli["Data_Formatada"] = df_cvli["DATA FATO"].dt.strftime("%d/%m/%Y")
+
     cvli_mes = df_cvli.groupby(["CIDADE FATO", "Ano", "Mes"]).size().reset_index(name="Total")
 
     cvli_mes = cvli_mes.set_index(["CIDADE FATO", "Ano", "Mes"]).reindex(todas_combinacoes, fill_value=0).reset_index()
@@ -101,15 +104,20 @@ def mostrar_comparativo_mes(df_filtrado, cidades, anos, meses):
 
     cvli_mes_pivot = cvli_mes_pivot.reset_index()
 
-    col_anos_mes = [col for col in cvli_mes_pivot.columns if isinstance(col, int)]
-    col_var_mes = [col for col in cvli_mes_pivot.columns if isinstance(col, str) and "Variação" in col]
-
     st.markdown("### 📊 Comparativo CVLI Mês a Mês")
     st.markdown(
         cvli_mes_pivot
-        .style.format({**{col: "{:.0f}" for col in col_anos_mes + col_var_mes}})
+        .style.format({col: "{:.0f}" for col in cvli_mes_pivot.columns if isinstance(col, int) or "% Variação" in str(col)})
         .set_properties(**{'text-align': 'center'})
         .hide(axis='index')
         .to_html(),
         unsafe_allow_html=True
     )
+
+    # Mostra tabela auxiliar com datas e dias da semana
+    st.markdown("### 📅 Datas e Dias da Semana por Cidade")
+    tabela_detalhes = df_cvli[["CIDADE FATO", "DATA FATO", "Data_Formatada", "Dia_Semana"]]
+    tabela_detalhes = tabela_detalhes[df_cvli["Ano"].isin(anos) & df_cvli["Mes"].isin(meses_filtrados)]
+    tabela_detalhes = tabela_detalhes.sort_values(by=["CIDADE FATO", "DATA FATO"])
+
+    st.dataframe(tabela_detalhes.reset_index(drop=True))
