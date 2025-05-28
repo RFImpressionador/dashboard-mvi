@@ -5,7 +5,8 @@
 # ├── autenticacao.py       <- Controle de acesso
 # ├── estilo.py             <- CSS customizado
 # ├── exportacao.py         <- Exportação de dados para Excel
-# └── analises.py           <- Exibição de tabelas e comparativos
+# ├── analises.py           <- Exibição de tabelas e comparativos
+# └── layout.py             <- Logo, navegação e créditos da barra lateral
 
 # ===========================================
 # dashboard_mvi.py (Arquivo principal)
@@ -22,21 +23,24 @@ from analises import (
     mostrar_comparativo_ano,
     mostrar_comparativo_mes
 )
+from layout import montar_sidebar
 import pandas as pd
 from datetime import datetime
 
 st.set_page_config(page_title="Análise MVI 10º BPM", layout="wide")
 aplicar_css_personalizado()
 
+# ✅ Menu lateral (com logo, filtros e navegação)
+montar_sidebar()
+
+# 🔐 Autenticação
 if not autenticar():
     st.stop()
 
+# 📊 Carregamento de dados
 df = carregar_dados()
 if df.empty:
     st.stop()
-st.subheader("🔍 Verificação de Dados Carregados")
-st.write("Número total de registros:", len(df))
-st.dataframe(df.head())
 
 # 📊 Filtros
 cidades, categorias, anos, meses = aplicar_filtros_sidebar(df)
@@ -47,7 +51,7 @@ if meses:
     df_filtrado = df_filtrado[df_filtrado["Mes"].isin(meses)]
 
 # 📊 Exibição das Tabelas
-mostrar_dias_sem_morte(df_filtrado, cidades)
+mostrar_dias_sem_morte(df, cidades)
 mostrar_total_por_cidade(df_filtrado, cidades)
 mostrar_comparativo_ano(df_filtrado, cidades)
 mostrar_comparativo_mes(df_filtrado, cidades, anos, meses)
