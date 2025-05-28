@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 from feriados import carregar_feriados_personalizados
-
+import holidays
 
 def mostrar_dias_sem_morte(df, cidades):
     df_cvli = df[df["CATEGORIA"] == "CVLI"]
@@ -28,7 +28,6 @@ def mostrar_dias_sem_morte(df, cidades):
         unsafe_allow_html=True
     )
 
-
 def mostrar_total_por_cidade(df_filtrado, cidades):
     tabela_total = (
         df_filtrado
@@ -48,7 +47,6 @@ def mostrar_total_por_cidade(df_filtrado, cidades):
         .to_html(),
         unsafe_allow_html=True
     )
-
 
 def mostrar_comparativo_ano(df_filtrado, cidades):
     df_cvli = df_filtrado[df_filtrado["CATEGORIA"] == "CVLI"]
@@ -76,13 +74,11 @@ def mostrar_comparativo_ano(df_filtrado, cidades):
         unsafe_allow_html=True
     )
 
-
 def mostrar_comparativo_mes(df_filtrado, cidades, anos, meses):
     if len(anos) <= 1:
         return
 
     meses_filtrados = sorted(meses) if meses else list(range(1, 13))
-
     todas_combinacoes = pd.MultiIndex.from_product(
         [cidades, anos, meses_filtrados],
         names=["CIDADE FATO", "Ano", "Mes"]
@@ -94,7 +90,25 @@ def mostrar_comparativo_mes(df_filtrado, cidades, anos, meses):
         "Thursday": "Quinta-feira", "Friday": "Sexta-feira", "Saturday": "Sábado", "Sunday": "Domingo"
     }
     df_cvli["Dia_Semana"] = df_cvli["DATA FATO"].dt.day_name().map(dias_pt)
-    df_cvli["Hora_Fato"] = df_cvli["DATA FATO"].dt.strftime("%H:%M")
+
+    # Carrega feriados personalizados e nacionais
+    feriados_custom = carregar_feriados_personalizados()
+    feriados_nacionais = holidays.Brazil()
+
+    def classificar_tipo_dia(row):
+        data = row["DATA FATO"].date()
+        cidade = row["CIDADE FATO"]
+
+        if data in feriados_nacionais:
+            return "Feriado Nacional"
+        elif cidade in feriados_custom:
+            if data in feriados_custom[cidade]["municipal"]:
+                return "Feriado Municipal"
+            elif data in feriados_custom[cidade]["estadual"]:
+                return "Feriado Estadual"
+        return "Dia comum"
+
+    df_cvli["Tipo_Dia"] = df_cvli.apply(classificar_tipo_dia, axis=1)
 
     cvli_mes = df_cvli.groupby(["CIDADE FATO", "Ano", "Mes"]).size().reset_index(name="Total")
     cvli_mes = cvli_mes.set_index(["CIDADE FATO", "Ano", "Mes"]).reindex(todas_combinacoes, fill_value=0).reset_index()
@@ -120,7 +134,7 @@ def mostrar_comparativo_mes(df_filtrado, cidades, anos, meses):
     )
 
     st.markdown("### 📅 Datas e Dias da Semana por Cidade")
-    tabela_detalhes = df_cvli[["CIDADE FATO", "DATA FATO", "Dia_Semana", "Hora_Fato"]]
+    tabela_detalhes = df_cvli[["CIDADE FATO", "DATA FATO", "Dia_Semana", "Tipo_Dia"]]
     tabela_detalhes = tabela_detalhes[df_cvli["Ano"].isin(anos) & df_cvli["Mes"].isin(meses_filtrados)]
     tabela_detalhes = tabela_detalhes.sort_values(by=["CIDADE FATO", "DATA FATO"])
     st.dataframe(tabela_detalhes.reset_index(drop=True))
