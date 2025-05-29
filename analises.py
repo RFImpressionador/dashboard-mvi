@@ -4,6 +4,19 @@ from datetime import datetime
 from feriados import carregar_feriados_personalizados
 import holidays
 
+st.markdown("""
+    <style>
+    div[data-baseweb="tag"] {
+        background-color: #00c8c8 !important;
+        color: #1e1e2f !important;
+        font-weight: bold;
+        border-radius: 6px;
+        padding: 4px 10px;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+
 def mostrar_dias_sem_morte(df, cidades, categorias):
     df_categoria = df[df["CATEGORIA"].isin(categorias)].copy()
 
@@ -34,6 +47,9 @@ def mostrar_dias_sem_morte(df, cidades, categorias):
         .to_html(),
         unsafe_allow_html=True
     )
+
+# (restante do código permanece o mesmo)
+
 
 def mostrar_total_por_cidade(df_filtrado, cidades):
     tabela_total = (
