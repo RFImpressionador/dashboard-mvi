@@ -4,8 +4,6 @@ from datetime import datetime
 from feriados import carregar_feriados_personalizados
 import holidays
 
-# DEVE VIR PRIMEIRO
-st.set_page_config(page_title="Análise MVI 10º BPM", layout="wide")
 
 # CSS Inline
 st.markdown("""
