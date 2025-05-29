@@ -44,6 +44,7 @@ def mostrar_total_por_cidade(df_filtrado, cidades):
         .reindex(index=cidades, fill_value=0)
         .stack()
         .reset_index(name="Total")
+        .sort_values(by="CIDADE FATO")
     )
 
     st.markdown("### 🔢 Total por Cidade e Categoria")
@@ -68,6 +69,7 @@ def mostrar_comparativo_ano(df_filtrado, cidades):
         cvli_por_ano[col_var] = cvli_por_ano[col_var].round(0).astype(int)
 
     cvli_pivot = cvli_por_ano.reset_index()
+    cvli_pivot = cvli_pivot.sort_values(by="CIDADE FATO")
     col_anos = [col for col in cvli_pivot.columns if isinstance(col, int)]
     col_var = [col for col in cvli_pivot.columns if isinstance(col, str) and "Variação" in col]
 
@@ -116,6 +118,7 @@ def mostrar_comparativo_mes(df_filtrado, cidades, anos, meses):
     cvli_mes = df_cvli.groupby(["CIDADE FATO", "Ano", "Mes"]).size().reset_index(name="Total")
     cvli_mes = cvli_mes.set_index(["CIDADE FATO", "Ano", "Mes"]).reindex(todas_combinacoes, fill_value=0).reset_index()
     cvli_mes_pivot = cvli_mes.pivot(index=["CIDADE FATO", "Mes"], columns="Ano", values="Total").fillna(0).astype(int)
+    cvli_mes_pivot = cvli_mes_pivot.reset_index().sort_values(by=["CIDADE FATO", "Mes"])
 
     col_anos_mes = [col for col in cvli_mes_pivot.columns if isinstance(col, int)]
     incluir_variacoes = len(anos) > 1 and len(meses_filtrados) > 1
@@ -127,7 +130,6 @@ def mostrar_comparativo_mes(df_filtrado, cidades, anos, meses):
             cvli_mes_pivot[col_var] = ((cvli_mes_pivot[atual] - cvli_mes_pivot[ant]) / cvli_mes_pivot[ant].replace(0, 1)) * 100
             cvli_mes_pivot[col_var] = cvli_mes_pivot[col_var].round(0).astype(int)
 
-    cvli_mes_pivot = cvli_mes_pivot.reset_index()
     col_format = {col: "{:.0f}" for col in cvli_mes_pivot.columns if isinstance(col, int) or "% Variação" in str(col)}
 
     st.markdown("### 📊 Comparativo CVLI Mês a Mês")
