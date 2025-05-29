@@ -4,6 +4,10 @@ from datetime import datetime
 from feriados import carregar_feriados_personalizados
 import holidays
 
+# DEVE VIR PRIMEIRO
+st.set_page_config(page_title="Análise MVI 10º BPM", layout="wide")
+
+# CSS Inline
 st.markdown("""
     <style>
     div[data-baseweb="tag"] {
@@ -15,7 +19,6 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
-
 
 def mostrar_dias_sem_morte(df, cidades, categorias):
     df_categoria = df[df["CATEGORIA"].isin(categorias)].copy()
@@ -47,6 +50,8 @@ def mostrar_dias_sem_morte(df, cidades, categorias):
         .to_html(),
         unsafe_allow_html=True
     )
+
+# (restante do código continua)
 
 # (restante do código permanece o mesmo)
 
