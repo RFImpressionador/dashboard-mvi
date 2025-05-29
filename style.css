@@ -120,3 +120,42 @@ a:hover {
     color: #00c8c8;
     text-decoration: underline;
 }
+
+/* ===== NOVO BLOCO PARA MULTISELECT ===== */
+div[data-baseweb="tag"] {
+    background-color: #00c8c8 !important;
+    color: #1e1e2f !important;
+    font-weight: bold !important;
+    border-radius: 12px !important;
+    padding: 6px 14px !important;
+    margin: 4px 4px 4px 0 !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+button[aria-label="remove"] svg {
+    fill: #1e1e2f !important;
+    width: 16px !important;
+    height: 16px !important;
+}
+
+.stMultiSelect > div {
+    font-size: 14px;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 6px;
+}
+::-webkit-scrollbar-thumb {
+    background-color: #00c8c8;
+    border-radius: 10px;
+}
+::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+label, div[data-testid="stMarkdownContainer"] p {
+    font-size: 14px !important;
+    color: #cfcfcf !important;
+}
+
