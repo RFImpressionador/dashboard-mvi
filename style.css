@@ -34,16 +34,23 @@ section[data-testid="stSidebar"] h1,
 section[data-testid="stSidebar"] h2,
 section[data-testid="stSidebar"] h3,
 section[data-testid="stSidebar"] h4 {
-    color: #ff4c61;
+    color: #00c8c8;
     text-align: left;
     font-weight: bold;
 }
 
-/* Selectbox e multiselect */
+/* Selectbox, multiselect e tags */
 .stSelectbox, .stMultiSelect, .stRadio, .stCheckbox {
     background-color: #25253a;
     border: 1px solid #00c8c8;
     color: white;
+    border-radius: 6px;
+}
+
+.css-1r6slb0 .css-1y4p8pa.e1g8pov61, .css-1r6slb0 .css-1n76uvr.e1g8pov61 {
+    background-color: #00c8c8 !important;
+    color: #1e1e2f !important;
+    font-weight: 600;
     border-radius: 6px;
 }
 
@@ -96,7 +103,7 @@ a:hover {
 .sidebar-title {
     font-size: 1.2rem;
     font-weight: bold;
-    color: #ff4c61;
+    color: #00c8c8;
     margin-top: 1rem;
     text-align: left;
 }
