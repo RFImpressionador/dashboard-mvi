@@ -24,6 +24,8 @@ def mostrar_dias_sem_morte(df, cidades, categorias):
     dias_sem_morte["Dias_Sem_Mortes"] = dias_sem_morte["Dias_Sem_Mortes"].fillna("Sem registro")
     dias_sem_morte.loc[dias_sem_morte["Dias_Sem_Mortes"] != "Sem registro", "Dias_Sem_Mortes"] = dias_sem_morte.loc[dias_sem_morte["Dias_Sem_Mortes"] != "Sem registro", "Dias_Sem_Mortes"].astype(int)
 
+    dias_sem_morte = dias_sem_morte.sort_values(by="CIDADE FATO")
+
     st.markdown("### ⏳ Dias sem Mortes por Cidade")
     st.markdown(
         dias_sem_morte
