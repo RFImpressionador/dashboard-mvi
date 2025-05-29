@@ -1,5 +1,18 @@
 import streamlit as st
 
+# CSS para estilizar as tags de seleção
+st.markdown("""
+    <style>
+    div[data-baseweb="tag"] {
+        background-color: #00c8c8 !important;
+        color: #1e1e2f !important;
+        font-weight: bold;
+        border-radius: 6px;
+        padding: 4px 10px;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 def aplicar_filtros_sidebar(df):
     cidades_10bpm = [
         "Palmeira dos Índios", "Igaci", "Estrela de Alagoas", "Minador do Negrão",
@@ -36,7 +49,5 @@ def aplicar_filtros_sidebar(df):
         format_func=lambda x: nomes_meses_ptbr[x - 1],
         default=[]
     )
-
-    return cidades, categorias, anos, meses
 
     return cidades, categorias, anos, meses
