@@ -47,14 +47,13 @@ section[data-testid="stSidebar"] h4 {
     border-radius: 6px;
 }
 
-.css-1r6slb0 .css-1n76uvr, .css-1r6slb0 .css-1y4p8pa {
+/* Correção moderna das tags multiselect */
+div[data-baseweb="tag"] {
     background-color: #00c8c8 !important;
     color: #1e1e2f !important;
     font-weight: bold;
-    border-radius: 8px;
+    border-radius: 6px;
     padding: 4px 10px;
-    margin: 2px;
-    border: none;
 }
 
 /* Tabelas */
