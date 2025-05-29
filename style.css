@@ -1,75 +1,82 @@
-/* Estilo base para o painel Streamlit */
+/* Tema Corporativo Escuro com Teal */
+
 body {
     font-family: 'Segoe UI', sans-serif;
-    background-color: #f8f9fa;
+    background-color: #1e1e2f;
+    color: #f0f0f0;
 }
 
-h1, h2, h3 {
-    color: #2c3e50;
+/* Títulos */
+h1, h2, h3, h4, h5, h6 {
+    color: #00c8c8;
+    font-weight: bold;
+    text-align: center;
 }
 
-/* Estilo para caixas de alerta */
-.stAlert {
-    background-color: #fff3cd;
-    border-left: 5px solid #ffeeba;
-    color: #856404;
+/* Botões */
+button[kind="primary"] {
+    background-color: #00c8c8;
+    color: #1e1e2f;
+    border-radius: 6px;
+    font-weight: bold;
+    padding: 0.5rem 1rem;
 }
 
-/* Centralizar tabelas */
+/* Sidebar */
+section[data-testid="stSidebar"] {
+    background-color: #25253a;
+    color: white;
+}
+
+/* Selectbox e multiselect */
+.stSelectbox, .stMultiSelect, .stRadio, .stCheckbox {
+    background-color: #25253a;
+    border: 1px solid #00c8c8;
+    color: white;
+    border-radius: 6px;
+}
+
+/* Tabelas */
 table {
-    margin-left: auto;
-    margin-right: auto;
+    width: 100%;
     border-collapse: collapse;
+    margin-top: 1rem;
+    background-color: #2a2a40;
+    color: white;
 }
 
-/* Borda suave nas células */
 th, td {
-    border: 1px solid #dee2e6;
+    border: 1px solid #3c3c55;
     padding: 8px;
     text-align: center;
 }
 
-/* Estilo para botões */
-button[kind="primary"] {
-    background-color: #0069d9;
-    color: white;
-    border-radius: 0.25rem;
-    padding: 0.5rem 1rem;
-    font-weight: bold;
+th {
+    background-color: #00c8c8;
+    color: #1e1e2f;
 }
 
-/* Customização do cabeçalho */
-.stMarkdown h3 {
+/* Cards de métricas */
+[data-testid="stMetric"] {
+    background-color: #25253a;
+    border: 1px solid #00c8c8;
+    border-radius: 8px;
+    padding: 1rem;
     text-align: center;
-    color: #dc3545;
-    margin-top: 1.5rem;
+    margin: 0.5rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.4);
 }
 
-/* Sidebar logo centralizada e redonda */
-section[data-testid="stSidebar"] img {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    border-radius: 50%;
-    border: 2px solid #aaa;
+/* Rodapé ou texto secundário */
+footer, small, .css-1v0mbdj {
+    color: #999;
 }
 
-/* Sidebar navegação limpa */
-ul {
-    list-style-type: none;
-    padding-left: 0;
+/* Links */
+a {
+    color: #00c8c8;
+    text-decoration: none;
 }
-
-ul li {
-    margin: 0.5rem 0;
-    color: #444;
-    font-size: 15px;
-}
-
-/* Pequeno rodapé */
-.sidebar .footer {
-    font-size: 12px;
-    color: gray;
-    text-align: center;
-    margin-top: 2rem;
+a:hover {
+    text-decoration: underline;
 }
