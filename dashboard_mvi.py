@@ -19,6 +19,25 @@ from datetime import datetime
 st.set_page_config(page_title="Análise MVI 10º BPM", layout="wide")
 aplicar_css_personalizado()
 
+# CSS para estilizar as tags de seleção
+st.markdown("""
+    <style>
+    /* Estiliza diretamente o conteúdo interno dos multiselects */
+    div[data-baseweb="tag"], span[class^="st-"], button[class^="st-"] {
+        background-color: #00c8c8 !important;
+        color: #1e1e2f !important;
+        font-weight: bold !important;
+        border-radius: 6px !important;
+        padding: 4px 10px !important;
+    }
+
+    /* Remove os X vermelhos dos botões de remoção */
+    button[aria-label="remove"] svg {
+        fill: #1e1e2f !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 # 🔐 Autenticação
 if not autenticar():
     st.stop()
