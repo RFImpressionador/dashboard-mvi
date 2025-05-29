@@ -4,8 +4,10 @@ import requests
 from io import BytesIO
 from datetime import datetime
 
-@st.cache_data
-def carregar_dados():
+def carregar_dados(atualizar_cache=False):
+    if atualizar_cache:
+        st.cache_data.clear()
+
     try:
         file_id = "1MNuLlWj6XFHsVgtrp4aUyitApFnFpP5s"
         url = f"https://drive.google.com/uc?export=download&id={file_id}"
@@ -23,3 +25,4 @@ def carregar_dados():
     except Exception as e:
         st.error(f"Erro ao carregar dados: {e}")
         return pd.DataFrame()
+
