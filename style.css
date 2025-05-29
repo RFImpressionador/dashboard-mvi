@@ -118,3 +118,15 @@ a:hover {
     color: #00c8c8;
     text-decoration: underline;
 }
+
+/* Corrige estilo das tags vermelhas dos multiselects */
+.css-1r6slb0 .css-1n76uvr, .css-1r6slb0 .css-1y4p8pa {
+    background-color: #00c8c8 !important;
+    color: #1e1e2f !important;
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 4px 10px;
+    margin: 2px;
+    border: none;
+}
+
