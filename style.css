@@ -26,6 +26,17 @@ button[kind="primary"] {
 section[data-testid="stSidebar"] {
     background-color: #25253a;
     color: white;
+    border-right: 2px solid #00c8c8;
+    padding: 1rem;
+}
+
+section[data-testid="stSidebar"] h1,
+section[data-testid="stSidebar"] h2,
+section[data-testid="stSidebar"] h3,
+section[data-testid="stSidebar"] h4 {
+    color: #ff4c61;
+    text-align: left;
+    font-weight: bold;
 }
 
 /* Selectbox e multiselect */
@@ -78,5 +89,25 @@ a {
     text-decoration: none;
 }
 a:hover {
+    text-decoration: underline;
+}
+
+/* Navegação customizada */
+.sidebar-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #ff4c61;
+    margin-top: 1rem;
+    text-align: left;
+}
+
+.sidebar-link {
+    font-size: 1rem;
+    margin: 0.25rem 0;
+    color: #f0f0f0;
+}
+
+.sidebar-link:hover {
+    color: #00c8c8;
     text-decoration: underline;
 }
