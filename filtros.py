@@ -1,24 +1,5 @@
 import streamlit as st
 
-# CSS para estilizar as tags de seleção
-st.markdown("""
-    <style>
-    /* Estiliza diretamente o conteúdo interno dos multiselects */
-    div[data-baseweb="tag"], span[class^="st-"], button[class^="st-"] {
-        background-color: #00c8c8 !important;
-        color: #1e1e2f !important;
-        font-weight: bold !important;
-        border-radius: 6px !important;
-        padding: 4px 10px !important;
-    }
-
-    /* Remove os X vermelhos dos botões de remoção */
-    button[aria-label="remove"] svg {
-        fill: #1e1e2f !important;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
 def aplicar_filtros_sidebar(df):
     cidades_10bpm = [
         "Palmeira dos Índios", "Igaci", "Estrela de Alagoas", "Minador do Negrão",
