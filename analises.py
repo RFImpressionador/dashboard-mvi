@@ -116,13 +116,13 @@ def mostrar_comparativo_mes(df_filtrado, cidades, anos, meses):
     }
     df_cvli["Dia_Semana"] = df_cvli["DATA FATO"].dt.day_name().map(dias_pt)
 
+    # Feriados
     feriados_custom = carregar_feriados_personalizados()
     feriados_nacionais = holidays.Brazil()
 
     def classificar_tipo_dia(row):
         data = row["DATA FATO"].date()
         cidade = row["CIDADE FATO"]
-
         if data in feriados_nacionais:
             return "Feriado Nacional"
         elif cidade in feriados_custom:
@@ -134,14 +134,19 @@ def mostrar_comparativo_mes(df_filtrado, cidades, anos, meses):
 
     df_cvli["Tipo_Dia"] = df_cvli.apply(classificar_tipo_dia, axis=1)
 
+    # Geração da Tabela CVLI mês
     cvli_mes = df_cvli.groupby(["CIDADE FATO", "Ano", "Mes"]).size().reset_index(name="Total")
     cvli_mes = cvli_mes.set_index(["CIDADE FATO", "Ano", "Mes"]).reindex(todas_combinacoes, fill_value=0).reset_index()
     cvli_mes_pivot = cvli_mes.pivot(index=["CIDADE FATO", "Mes"], columns="Ano", values="Total").fillna(0).astype(int)
     cvli_mes_pivot = cvli_mes_pivot.reset_index().sort_values(by=["CIDADE FATO", "Mes"])
 
+    # ✅ Mês em formato abreviado
+    nomes_meses_abrev = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"]
+    cvli_mes_pivot["Mes"] = cvli_mes_pivot["Mes"].map(lambda x: nomes_meses_abrev[x - 1])
+
+    # Cálculo de variações se aplicável
     col_anos_mes = [col for col in cvli_mes_pivot.columns if isinstance(col, int)]
     incluir_variacoes = len(anos) > 1 and len(meses_filtrados) > 1
-
     if incluir_variacoes:
         for i in range(1, len(col_anos_mes)):
             ant, atual = col_anos_mes[i - 1], col_anos_mes[i]
@@ -151,6 +156,7 @@ def mostrar_comparativo_mes(df_filtrado, cidades, anos, meses):
 
     col_format = {col: "{:.0f}" for col in cvli_mes_pivot.columns if isinstance(col, int) or "% Variação" in str(col)}
 
+    # Exibe a tabela
     st.markdown("### 📊 Comparativo CVLI Mês a Mês")
     st.markdown(
         cvli_mes_pivot
@@ -160,6 +166,23 @@ def mostrar_comparativo_mes(df_filtrado, cidades, anos, meses):
         .to_html(),
         unsafe_allow_html=True
     )
+
+    # Tabela de detalhes
+    st.markdown("### 📅 Datas e Dias da Semana por Cidade")
+    df_cvli["DATA FATO"] = pd.to_datetime(df_cvli["DATA FATO"])
+    df_cvli["DATA FATO"] = df_cvli["DATA FATO"].dt.strftime("%d/%m/%Y %H:%M")
+    tabela_detalhes = df_cvli[["CIDADE FATO", "DATA FATO", "Dia_Semana", "Tipo_Dia"]]
+    tabela_detalhes = tabela_detalhes[df_cvli["Ano"].isin(anos) & df_cvli["Mes"].isin(meses_filtrados)]
+    tabela_detalhes = tabela_detalhes.sort_values(by=["CIDADE FATO", "DATA FATO"])
+
+    st.markdown(
+        tabela_detalhes
+        .style.set_properties(**{'text-align': 'center'})
+        .hide(axis='index')
+        .to_html(),
+        unsafe_allow_html=True
+    )
+
 
     st.markdown("### 📅 Datas e Dias da Semana por Cidade")
     df_cvli["DATA FATO"] = pd.to_datetime(df_cvli["DATA FATO"])
