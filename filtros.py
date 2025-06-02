@@ -33,7 +33,7 @@ def aplicar_filtros_sidebar(df):
     meses = st.multiselect(
         "Selecionar Mês (opcional)",
         options=sorted(df["Mes"].dropna().unique().tolist()),
-        format_func=lambda x: nomes_meses_ptbr[x - 1],
+        format_func=lambda x: nomes_meses_ptbr[int(x) - 1],
         default=[]
     )
 
