@@ -2,6 +2,9 @@
 # dashboard_mvi.py (Arquivo principal)
 # ===========================================
 import streamlit as st
+import pandas as pd
+from datetime import datetime
+
 from dados import carregar_dados
 from filtros import aplicar_filtros_sidebar
 from autenticacao import autenticar
@@ -13,8 +16,6 @@ from analises import (
     mostrar_comparativo_ano,
     mostrar_comparativo_mes
 )
-import pandas as pd
-from datetime import datetime
 
 st.set_page_config(page_title="Análise MVI 10º BPM", layout="wide")
 aplicar_css_personalizado()
