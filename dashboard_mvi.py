@@ -16,7 +16,6 @@ from analises import (
     mostrar_comparativo_ano,
     mostrar_comparativo_mes
 )
-
 st.set_page_config(page_title="Análise MVI 10º BPM", layout="wide")
 aplicar_css_personalizado()
 
