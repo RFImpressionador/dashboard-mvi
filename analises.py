@@ -141,9 +141,8 @@ def mostrar_comparativo_mes(df_filtrado, cidades, anos, meses):
     cvli_mes_pivot = cvli_mes_pivot.reset_index().sort_values(by=["CIDADE FATO", "Mes"])
 
     # ✅ Mês em formato abreviado
-    nomes_meses_abrev = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"]
-    cvli_mes_pivot["Mes"] = cvli_mes_pivot["Mes"].map(lambda x: nomes_meses_abrev[x - 1])
-
+   nomes_meses_abrev = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"]
+cvli_mes_pivot["Mes"] = cvli_mes_pivot["Mes"].astype(int).map(lambda x: nomes_meses_abrev[x - 1])
     # Cálculo de variações se aplicável
     col_anos_mes = [col for col in cvli_mes_pivot.columns if isinstance(col, int)]
     incluir_variacoes = len(anos) > 1 and len(meses_filtrados) > 1
