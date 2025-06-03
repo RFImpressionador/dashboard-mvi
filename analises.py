@@ -140,15 +140,15 @@ def mostrar_comparativo_mes(df_filtrado, cidades, anos, meses):
                 cvli_mes_pivot[col_var] = cvli_mes_pivot[col_var].round(0).astype(int)
 
     nomes_meses_ptbr = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"]
+
     def nome_mes(col):
-    try:
-        if isinstance(col, str) and col.count("/") == 1 and len(col.split("/")[0]) == 2:
-            mes, ano = col.split("/")
-            nomes_meses_ptbr = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"]
-            return f"{nomes_meses_ptbr[int(mes)-1]}/{ano}"
-    except:
-        pass
-    return col
+        try:
+            if isinstance(col, str) and col.count("/") == 1 and len(col.split("/")[0]) == 2:
+                mes, ano = col.split("/")
+                return f"{nomes_meses_ptbr[int(mes)-1]}/{ano}"
+        except:
+            pass
+        return col
 
     cvli_mes_pivot.columns = ["CIDADE FATO"] + [nome_mes(c) for c in cvli_mes_pivot.columns[1:]]
 
@@ -177,4 +177,6 @@ def mostrar_comparativo_mes(df_filtrado, cidades, anos, meses):
         .hide(axis='index')
         .to_html(),
         unsafe_allow_html=True
+    )
+
     )
