@@ -4,7 +4,6 @@ from datetime import datetime
 from feriados import carregar_feriados_personalizados
 import holidays
 
-
 # CSS Inline
 st.markdown("""
     <style>
@@ -20,11 +19,8 @@ st.markdown("""
 
 def mostrar_dias_sem_morte(df, cidades, categorias):
     df_categoria = df[df["CATEGORIA"].isin(categorias)].copy()
-
-    # Certifica que datas são datetime válidas
     df_categoria = df_categoria[df_categoria["DATA FATO"].notna()]
     df_categoria["DATA FATO"] = pd.to_datetime(df_categoria["DATA FATO"], errors="coerce")
-
     df_filtrado = df_categoria[df_categoria["CIDADE FATO"].isin(cidades)]
 
     ultimas_mortes = df_filtrado.groupby("CIDADE FATO")["DATA FATO"].max().reindex(cidades)
@@ -134,15 +130,12 @@ def mostrar_comparativo_mes(df_filtrado, cidades, anos, meses):
     cvli_mes_pivot = cvli_mes.pivot(index=["CIDADE FATO", "Mes"], columns="Ano", values="Total").fillna(0).astype(int)
     cvli_mes_pivot = cvli_mes_pivot.reset_index()
 
-    # Converte mês para nome abreviado em português
     nomes_meses_ptbr = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"]
     cvli_mes_pivot["Mes"] = cvli_mes_pivot["Mes"].apply(lambda x: nomes_meses_ptbr[int(x) - 1])
-    cvli_mes_pivot = cvli_mes_pivot.sort_values(by=["CIDADE FATO", "Mes"])
+    cvli_mes_pivot = cvli_mes_pivot.sort_values(by=["CIDADE FATO", "Mes"], key=lambda col: col if col.name == "CIDADE FATO" else col.map(lambda m: nomes_meses_ptbr.index(m)))
 
     col_anos_mes = [col for col in cvli_mes_pivot.columns if isinstance(col, int)]
-    incluir_variacoes = len(anos) > 1 and len(meses_filtrados) > 1
-
-    if incluir_variacoes:
+    if len(anos) > 1:
         for i in range(1, len(col_anos_mes)):
             ant, atual = col_anos_mes[i - 1], col_anos_mes[i]
             col_var = f"% Variação {ant}-{atual}"
