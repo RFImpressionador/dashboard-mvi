@@ -35,7 +35,7 @@ section[data-testid="stSidebar"] img {
     margin: 5rem;
     margin-top: 1rem;
     margin-bottom: 1rem;
-    border-radius: 50%;
+    # border-radius: 50%;
 }
 
 section[data-testid="stSidebar"] div[data-testid="stImage"] {
