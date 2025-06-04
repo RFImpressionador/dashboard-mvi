@@ -39,7 +39,7 @@ section[data-testid="stSidebar"] img {
 }
 
 section[data-testid="stSidebar"] div[data-testid="stImage"] {
-    text-align: center;
+    imag-align: center;
 }
 
 section[data-testid="stSidebar"] h1,
