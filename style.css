@@ -170,6 +170,6 @@ button[aria-label="remove"] svg {
 
 label, div[data-testid="stMarkdownContainer"] p {
     font-size: 14px !important;
-    color: #000 !important;
+    color: #cfcfcf !important;
 }
 
