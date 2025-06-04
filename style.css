@@ -32,7 +32,7 @@ section[data-testid="stSidebar"] {
 
 section[data-testid="stSidebar"] img {
     display: block;
-    margin: auto;
+    margin: 5rem;
     margin-top: 1rem;
     margin-bottom: 1rem;
     border-radius: 50%;
