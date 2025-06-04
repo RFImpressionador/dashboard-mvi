@@ -16,6 +16,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Botões */
 button[kind="primary"] {
     background-color: #00c8c8;
+    color: #1e1e2f;
     color: #000;
     border-radius: 6px;
     font-weight: bold;
@@ -38,10 +39,12 @@ section[data-testid="stSidebar"] {
 
 section[data-testid="stSidebar"] img {
     display: block;
-    margin: 2rem;
-    margin-top: 0;
-    margin-bottom: 1rem;
+    margin: 0 auto;
     border-radius: 50%;
+}
+
+section[data-testid="stSidebar"] div[data-testid="stImage"] {
+    text-align: center;
 }
 
 section[data-testid="stSidebar"] h1,
@@ -68,108 +71,5 @@ div[data-baseweb="tag"] {
     font-weight: bold;
     border-radius: 6px;
     padding: 4px 10px;
-}
-
-/* Tabelas */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 1rem;
-    background-color: #2a2a40;
-    color: white;
-}
-
-th, td {
-    border: 1px solid #3c3c55;
-    padding: 8px;
-    text-align: center;
-}
-
-th {
-    background-color: #00c8c8;
-    color: #1e1e2f;
-}
-
-/* Cards de métricas */
-[data-testid="stMetric"] {
-    background-color: #25253a;
-    border: 1px solid #00c8c8;
-    border-radius: 8px;
-    padding: 1rem;
-    text-align: center;
-    margin: 0.5rem;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.4);
-}
-
-/* Rodapé ou texto secundário */
-footer, small, .css-1v0mbdj {
-    color: #999;
-}
-
-/* Links */
-a {
-    color: #00c8c8;
-    text-decoration: none;
-}
-a:hover {
-    text-decoration: underline;
-}
-
-/* Navegação customizada */
-.sidebar-title {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #00c8c8;
-    margin-top: 1rem;
-    text-align: left;
-}
-
-.sidebar-link {
-    font-size: 1rem;
-    margin: 0.25rem 0;
-    color: #f0f0f0;
-}
-
-.sidebar-link:hover {
-    color: #00c8c8;
-    text-decoration: underline;
-}
-
-/* ===== NOVO BLOCO PARA MULTISELECT ===== */
-div[data-baseweb="tag"] {
-    background-color: #00c8c8 !important;
-    color: #1e1e2f !important;
-    font-weight: bold !important;
-    border-radius: 12px !important;
-    padding: 6px 14px !important;
-    margin: 4px 4px 4px 0 !important;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-button[aria-label="remove"] svg {
-    fill: #1e1e2f !important;
-    width: 16px !important;
-    height: 16px !important;
-}
-
-.stMultiSelect > div {
-    font-size: 14px;
-}
-
-::-webkit-scrollbar {
-    width: 8px;
-    height: 6px;
-}
-::-webkit-scrollbar-thumb {
-    background-color: #00c8c8;
-    border-radius: 10px;
-}
-::-webkit-scrollbar-track {
-    background-color: transparent;
-}
-
-label, div[data-testid="stMarkdownContainer"] p {
-    font-size: 14px !important;
-    color: #cfcfcf !important;
 }
 
