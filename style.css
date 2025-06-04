@@ -30,6 +30,12 @@ section[data-testid="stSidebar"] {
     padding: 1rem;
 }
 
+section[data-testid="stSidebar"] img {
+    display: block;
+    margin: 0 auto;
+    border-radius: 50%;
+}
+
 section[data-testid="stSidebar"] h1,
 section[data-testid="stSidebar"] h2,
 section[data-testid="stSidebar"] h3,
