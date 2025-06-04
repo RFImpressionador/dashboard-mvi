@@ -22,6 +22,12 @@ button[kind="primary"] {
     padding: 0.5rem 1rem;
 }
 
+/* Botão de download de tabelas */
+div[data-testid="stDownloadButton"] button,
+div[data-testid="stDownloadButton"] a {
+    color: #000 !important;  /* cor do texto preto */
+}
+
 /* Sidebar */
 section[data-testid="stSidebar"] {
     background-color: #25253a;
