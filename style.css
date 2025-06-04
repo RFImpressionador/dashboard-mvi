@@ -16,10 +16,16 @@ h1, h2, h3, h4, h5, h6 {
 /* Botões */
 button[kind="primary"] {
     background-color: #00c8c8;
-    color: #1e1e2f;
+    color: #000;
     border-radius: 6px;
     font-weight: bold;
     padding: 0.5rem 1rem;
+}
+
+/* Botão de download de tabelas */
+div[data-testid="stDownloadButton"] button,
+div[data-testid="stDownloadButton"] a {
+    color: #001e50 !important;  /* cor do texto azul escuro */
 }
 
 /* Sidebar */
