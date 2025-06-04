@@ -5,7 +5,7 @@ Este projeto é um painel interativo desenvolvido com Streamlit para análise de
 ## 🗂️ Estrutura Modular
 
 ```
-├── app.py                <- Arquivo principal da aplicação
+├── dashboard_mvi.py       <- Arquivo principal da aplicação
 ├── autenticacao.py       <- Função de autenticação por senha
 ├── dados.py              <- Carregamento e tratamento de dados
 ├── estilo.py             <- Aplicação de CSS customizado
@@ -25,7 +25,7 @@ pip install streamlit pandas openpyxl xlsxwriter requests
 2. Execute o aplicativo:
 
 ```bash
-streamlit run app.py
+streamlit run dashboard_mvi.py
 ```
 
 ## 🔐 Autenticação
