@@ -36,6 +36,10 @@ section[data-testid="stSidebar"] img {
     border-radius: 50%;
 }
 
+section[data-testid="stSidebar"] div[data-testid="stImage"] {
+    text-align: center;
+}
+
 section[data-testid="stSidebar"] h1,
 section[data-testid="stSidebar"] h2,
 section[data-testid="stSidebar"] h3,
